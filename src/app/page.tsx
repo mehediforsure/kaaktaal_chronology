@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { ActiveRoom, CrowAccident, FinderTab } from '../types';
 import { CROW_ACCIDENTS } from '../data';
 import useEngagement from '../hooks/useEngagement';
+import { supabase } from '@/lib/supabase';
 
 import { getOptimizedImageUrl } from '../utils/image';
 import Crow from '../components/Crow';
@@ -20,6 +21,27 @@ import MusicArchiveRoom from '../components/MusicArchiveRoom';
 import FinderRoom from '../components/FinderRoom';
 import MapRoom from '../components/MapRoom';
 import AccidentRoom from '../components/AccidentRoom';
+
+// --- TEMPORARY: Supabase connectivity test ---
+async function testSupabase() {
+  const { data, error } = await supabase
+    .from('journals')
+    .insert({
+      title: 'Test Journal',
+      content: 'Hello from Kaaktaal.',
+      status: 'draft',
+    });
+
+  console.log('Supabase data:', data);
+  console.log('Supabase error:', error);
+
+  if (error) {
+    alert(`Supabase Error: ${error.message}`);
+  } else {
+    alert('✅ Supabase insert successful! Check your dashboard.');
+  }
+}
+// --- END TEMPORARY ---
 
 function AppContent() {
   const [activeRoom, setActiveRoom] = useState<ActiveRoom>('home');
@@ -287,6 +309,17 @@ function AppContent() {
             <div className="w-full max-w-xl mx-auto mt-4 md:mt-6">
               <JournalSection />
             </div>
+
+            {/* --- TEMPORARY: Supabase Test Button --- */}
+            <div className="w-full max-w-xl mx-auto mt-4">
+              <button
+                onClick={testSupabase}
+                className="px-4 py-2 border-2 border-ink bg-bg hover:bg-ink hover:text-bg font-mono text-xs uppercase tracking-widest font-bold transition-all duration-200 rounded-xs cursor-pointer"
+              >
+                Test Supabase
+              </button>
+            </div>
+            {/* --- END TEMPORARY --- */}
           </div>
         );
       case 'portal':
