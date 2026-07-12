@@ -20,7 +20,7 @@ This is **not** a conventional website. It's an *experiential archive* where use
 | [layout.tsx](file:///c:/Web%20Design/Kaaktaal%20Web/Version%201.3/VIte%20SPA/src/app/layout.tsx) | Root **Server Component**. Sets metadata (title, favicon), imports global CSS, wraps children in `<Providers>` |
 | [providers.tsx](file:///c:/Web%20Design/Kaaktaal%20Web/Version%201.3/VIte%20SPA/src/app/providers.tsx) | `'use client'` wrapper. Isolates `EngagementProvider` so layout stays server-side |
 | [page.tsx](file:///c:/Web%20Design/Kaaktaal%20Web/Version%201.3/VIte%20SPA/src/app/page.tsx) | `'use client'` home page. Contains the full UI in `AppContent()` — room navigation, header, footer, drawer, overlays |
-| [route.ts](file:///c:/Web%20Design/Kaaktaal%20Web/Version%201.3/VIte%20SPA/src/app/api/ask-gemini/route.ts) | API route. Calls **Google Gemini** (`gemini-2.5-flash`) to answer user questions about Kaaktaal songs in the persona of a "wise archivist" |
+| [route.ts](file:///c:/Web%20Design/Kaaktaal%20Web/Version%201.3/VIte%20SPA/src/app/api/ask-gemini/route.ts) | API route. Calls **Google Gemini** (`gemini-3.5-flash`) to answer user questions about Kaaktaal songs in the persona of a "wise archivist" |
 
 ---
 

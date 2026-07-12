@@ -277,12 +277,6 @@ export const PORTAL_RECOMMENDATIONS: Record<string, RecommendationPackage> = {
   }
 };
 
-export const MOCK_JOURNAL = {
-  date: 'Friday, July 3, 2026',
-  title: 'The Weight of Quiet Verandahs',
-  content: `We have been thinking about the spaces that exist between things. Not the notes, but the silence that holds them together. Lately, Dhaka has been breathing differently; the summer heat sits heavily on red-brick walls. We sat on the verandah with a broken microphone and a guitar that refused to stay in tune, letting the tape roll. Some things belong in the archive simply because they happened to be there.`
-};
-
 export const CROW_ACCIDENTS: CrowAccident[] = [
   {
     id: 'crow-song-1',

@@ -124,7 +124,7 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
               onClick={() => setSelectedAlbum(null)}
               className="font-mono text-xs uppercase tracking-widest text-ink hover:text-bg hover:bg-ink border-2 border-ink py-2 px-4 rounded-xs transition-colors cursor-pointer font-bold select-none"
             >
-              ← Back to Recorded Works
+              ←
             </button>
 
             {/* Album Detail Grid */}
@@ -229,7 +229,7 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
                             }}
                             className="font-mono text-[10px] text-bg bg-ink uppercase font-bold tracking-widest opacity-0 group-hover:opacity-100 transition-opacity select-none cursor-pointer px-2.5 py-1 rounded-xs hover:bg-accent hover:border-accent"
                           >
-                            Open Song ✦
+                            Open Song 
                           </button>
                         </div>
                       </div>
