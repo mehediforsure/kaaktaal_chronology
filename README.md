@@ -1,0 +1,1 @@
+This is not a conventional website. It's an experiential archive where users navigate themed "rooms," each containing different content: music, stories, maps, memories, artwork, lyrics, and more.
