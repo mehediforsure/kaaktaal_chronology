@@ -2,8 +2,8 @@
   "crons": [
     {
       "path": "/api/admin/journal/generate",
-      "schedule": "5 1 * * *"
+      "schedule": "35 1 * * *"
     }
   ]
 }
-
+

@@ -14,12 +14,16 @@ async function handleGenerate(req: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
     const adminUrl = `${baseUrl.replace(/\/$/, "")}/admin/journal`;
 
-    // Send Telegram Notification
+    // Send Telegram Notification (must be awaited in serverless context)
     const telegramMsg = `🌧️ <b>Kaaktaal Journal Draft Ready for Review</b>\n\n<b>Title:</b> ${draft.title}\n\n<b>Content:</b>\n<i>"${draft.content}"</i>\n\n👉 <a href="${adminUrl}">Tap here to Review & Publish</a>`;
     
-    sendTelegramMessage(telegramMsg, "HTML").catch((err) => {
+    try {
+      await sendTelegramMessage(telegramMsg, "HTML");
+      console.log("[Admin Journal] Telegram notification sent successfully.");
+    } catch (err) {
       console.error("[Admin Journal] Error triggering Telegram notification:", err);
-    });
+    }
+
 
     return NextResponse.json({
       success: true,
