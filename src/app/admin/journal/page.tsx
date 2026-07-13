@@ -9,6 +9,7 @@ import {
   History,
   Send,
   AlertCircle,
+  Lock,
 } from "lucide-react";
 
 interface JournalEntry {
@@ -20,6 +21,11 @@ interface JournalEntry {
 }
 
 export default function AdminJournalPage() {
+  // Password Authentication state
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [passwordInput, setPasswordInput] = useState("");
+  const [authError, setAuthError] = useState(false);
+
   // Live Journal state
   const [liveJournal, setLiveJournal] = useState<JournalEntry | null>(null);
   const [loadingLive, setLoadingLive] = useState(true);
@@ -36,6 +42,27 @@ export default function AdminJournalPage() {
 
   // Feedback notifications
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+
+  // Check existing session auth on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedAuth = sessionStorage.getItem("kaaktaal_admin_auth");
+      if (savedAuth === "true") {
+        setIsAuthenticated(true);
+      }
+    }
+  }, []);
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (passwordInput.trim() === "kaaktaal") {
+      setIsAuthenticated(true);
+      setAuthError(false);
+      sessionStorage.setItem("kaaktaal_admin_auth", "true");
+    } else {
+      setAuthError(true);
+    }
+  };
 
   // Fetch current live journal
   const fetchLiveJournal = useCallback(async () => {
@@ -70,9 +97,11 @@ export default function AdminJournalPage() {
   }, []);
 
   useEffect(() => {
-    fetchLiveJournal();
-    fetchHistory();
-  }, [fetchLiveJournal, fetchHistory]);
+    if (isAuthenticated) {
+      fetchLiveJournal();
+      fetchHistory();
+    }
+  }, [isAuthenticated, fetchLiveJournal, fetchHistory]);
 
   // Generate draft via Gemini
   const handleGenerateDraft = async () => {
@@ -148,15 +177,75 @@ export default function AdminJournalPage() {
     window.scrollTo({ top: 300, behavior: "smooth" });
   };
 
+  // Password Lock Screen
+  if (!isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-[#F8F7F4] text-[#111113] flex items-center justify-center p-4 selection:bg-[#111113]/20">
+        <form
+          onSubmit={handlePasswordSubmit}
+          className="bg-white border border-[#111113]/15 p-8 max-w-sm w-full space-y-6 shadow-xs"
+        >
+          <div className="space-y-1">
+            <div className="font-mono text-[10px] uppercase tracking-widest text-[#111113]/60 font-semibold flex items-center gap-1.5">
+              <Lock className="w-3 h-3" />
+              Kaaktaal Archive Admin
+            </div>
+            <h1 className="font-plakatbau text-3xl uppercase font-extrabold text-[#111113]">
+              Authentication
+            </h1>
+          </div>
+
+          <div className="space-y-2">
+            <label className="font-mono text-[10px] uppercase tracking-widest text-[#111113]/70 font-bold">
+              Access Password
+            </label>
+            <input
+              type="password"
+              value={passwordInput}
+              onChange={(e) => {
+                setPasswordInput(e.target.value);
+                setAuthError(false);
+              }}
+              placeholder="Enter password"
+              className="w-full font-mono text-sm px-4 py-2.5 border border-[#111113]/20 focus:border-[#111113] focus:outline-none bg-[#F8F7F4]/50 transition-colors"
+              autoFocus
+            />
+            {authError && (
+              <p className="font-mono text-[11px] text-[#111113] font-semibold">
+                Invalid access password. Try again.
+              </p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full font-mono text-xs uppercase tracking-widest px-4 py-3 bg-[#111113] text-gray-300 hover:text-white transition-colors rounded-xs font-bold cursor-pointer"
+          >
+            Authenticate
+          </button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#F8F7F4] text-[#111113] font-sans p-4 sm:p-8 md:p-12 selection:bg-[#111113]/20">
       <div className="max-w-5xl mx-auto space-y-8">
         
         {/* Top Header */}
-        <header className="border-b border-[#111113]/15 pb-6">
+        <header className="border-b border-[#111113]/15 pb-6 flex justify-between items-center">
           <h1 className="font-plakatbau text-3xl sm:text-4xl md:text-5xl uppercase font-extrabold text-[#111113] tracking-wide leading-none">
             admin
           </h1>
+          <button
+            onClick={() => {
+              sessionStorage.removeItem("kaaktaal_admin_auth");
+              setIsAuthenticated(false);
+            }}
+            className="font-mono text-[10px] uppercase tracking-widest text-[#111113]/50 hover:text-[#111113]"
+          >
+            Lock Panel
+          </button>
         </header>
 
         {/* System Alert Banner */}
