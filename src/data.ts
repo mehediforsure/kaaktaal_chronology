@@ -2,11 +2,13 @@ import { Album, RecommendationPackage, CrowAccident } from './types';
 
 export const ALBUMS: Album[] = [
   {
-    id: 'na-koite-pari',
+    release_id: 'na-koite-pari',
     title: 'Na Koite Pari - Na Shoite Pari',
+    release_date: '2025-10-12',
     year: '2025',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Na%20Koite%20Pari%20-%20Na%20Shoite%20Pari.jpg',
-    description: 'A study on silent grief, lingering echoes, and things left unuttered. Recorded over seven sleepless autumn nights on a single cassette recorder in a quiet Dhaka suburb.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Na%20Koite%20Pari%20-%20Na%20Shoite%20Pari.jpg',
+    spotify_url: 'https://open.spotify.com/album/3NaKoitePariExample',
+    description_short: 'A study on silent grief, lingering echoes, and things left unuttered. Recorded over seven sleepless autumn nights on a single cassette recorder in a quiet Dhaka suburb.',
     tracks: [
       'Na Koite Pari (Intro)',
       'Na Shoite Pari',
@@ -15,14 +17,16 @@ export const ALBUMS: Album[] = [
       'Aakash Bhanga Brishti',
       'Silent Letters on Wood'
     ],
-    journalExcerpt: 'October 12. There is a specific quality to the silence of Dhaka at 3 AM. It doesn\'t feel like the absence of sound, but rather like the gathering of every word we decided not to say during the day. This record is made from those gathered things.'
+    description_long: 'October 12. There is a specific quality to the silence of Dhaka at 3 AM. It doesn\'t feel like the absence of sound, but rather like the gathering of every word we decided not to say during the day. This record is made from those gathered things.'
   },
   {
-    id: 'dinkal-ajkal',
+    release_id: 'dinkal-ajkal',
     title: 'Dinkal Ajkal',
+    release_date: '2024-04-04',
     year: '2024',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Dinkal%20Ajkal.jpg',
-    description: 'An observation of changing times, disappearing landmarks, and the heavy passage of youth. Musically expansive, integrating traditional instruments with weathered electronic drone.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Dinkal%20Ajkal.jpg',
+    spotify_url: 'https://open.spotify.com/album/4DinkalAjkalExample',
+    description_short: 'An observation of changing times, disappearing landmarks, and the heavy passage of youth. Musically expansive, integrating traditional instruments with weathered electronic drone.',
     tracks: [
       'Dinkal Ajkal',
       'Shayor',
@@ -31,14 +35,16 @@ export const ALBUMS: Album[] = [
       'Bhashman',
       'Dinkal (Reprise)'
     ],
-    journalExcerpt: 'April 4. The old teahouse by the railway line was demolished yesterday. I sat across the street and watched. I realized that cities change exactly like faces do—incrementally, until you look one day and realize the person you knew is entirely gone.'
+    description_long: 'April 4. The old teahouse by the railway line was demolished yesterday. I sat across the street and watched. I realized that cities change exactly like faces do—incrementally, until you look one day and realize the person you knew is entirely gone.'
   },
   {
-    id: 'karagarer-gaan',
+    release_id: 'karagarer-gaan',
     title: 'Karagarer Gaan',
+    release_date: '2023-01-19',
     year: '2023',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Karagarer%20Gaan.jpg',
-    description: 'Literally translating to "Songs from Prison", this release gathers historical resistance songs, poems of captivity, and acoustic re-interpretations of freedom ballads.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Karagarer%20Gaan.jpg',
+    spotify_url: 'https://open.spotify.com/album/5KaragarerGaanExample',
+    description_short: 'Literally translating to "Songs from Prison", this release gathers historical resistance songs, poems of captivity, and acoustic re-interpretations of freedom ballads.',
     tracks: [
       'Mukti',
       'Karagarer Chithi',
@@ -47,14 +53,16 @@ export const ALBUMS: Album[] = [
       'Shokun',
       'Shorolpoth'
     ],
-    journalExcerpt: 'January 19. Captivity has its own rhythm. The constant dripping of water, the uniform spacing of footfalls in the corridor. When you have nothing, you find melody in the friction of survival.'
+    description_long: 'January 19. Captivity has its own rhythm. The constant dripping of water, the uniform spacing of footfalls in the corridor. When you have nothing, you find melody in the friction of survival.'
   },
   {
-    id: 'raw-vol-1',
+    release_id: 'raw-vol-1',
     title: 'Kaaktaal Raw Volume 01',
+    release_date: '2021-07-15',
     year: '2021',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2001.jpg',
-    description: 'The foundation. Extremely raw four-track tapes, ambient apartment noise, and half-remembered melodies hummed while walking in the rain.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2001.jpg',
+    spotify_url: 'https://open.spotify.com/album/1RawVol1Example',
+    description_short: 'The foundation. Extremely raw four-track tapes, ambient apartment noise, and half-remembered melodies hummed while walking in the rain.',
     tracks: [
       'Borshar Gaan',
       'Kheyali',
@@ -62,14 +70,16 @@ export const ALBUMS: Album[] = [
       'Chaya',
       'Distant Whistle & Rain'
     ],
-    journalExcerpt: 'July 15. The microphone captured the entire thunderstorm outside my window. I chose not to filter it. The weather is as much a member of the band as we are.'
+    description_long: 'July 15. The microphone captured the entire thunderstorm outside my window. I chose not to filter it. The weather is as much a member of the band as we are.'
   },
   {
-    id: 'raw-vol-2',
+    release_id: 'raw-vol-2',
     title: 'Kaaktaal Raw Volume 02',
+    release_date: '2021-09-22',
     year: '2021',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Kaaktaal%20Raw%20Volume%2002.jpg',
-    description: 'Continuing the archival process. Features sparse nylon string guitars and early diary entries spoken over slow instrumental loops.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Kaaktaal%20Raw%20Volume%2002.jpg',
+    spotify_url: 'https://open.spotify.com/album/2RawVol2Example',
+    description_short: 'Continuing the archival process. Features sparse nylon string guitars and early diary entries spoken over slow instrumental loops.',
     tracks: [
       'Chorabali',
       'Nisshongo',
@@ -77,14 +87,16 @@ export const ALBUMS: Album[] = [
       'Shunnota',
       'The Crow\'s Monologue'
     ],
-    journalExcerpt: 'September 22. A friend asked if we would ever record in a professional studio. I told them no. Studio walls are too clean. They don\'t have memories. Tapes recorded in a bedroom carry the dust of a real life.'
+    description_long: 'September 22. A friend asked if we would ever record in a professional studio. I told them no. Studio walls are too clean. They don\'t have memories. Tapes recorded in a bedroom carry the dust of a real life.'
   },
   {
-    id: 'raw-vol-3',
+    release_id: 'raw-vol-3',
     title: 'Kaaktaal Raw Volume 03',
+    release_date: '2022-11-08',
     year: '2022',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2003.jpg',
-    description: 'Deepening into folk-minimalism. Sparse arrangements focusing heavily on the lyricism of the soil, water, and shifting skylines.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2003.jpg',
+    spotify_url: 'https://open.spotify.com/album/3RawVol3Example',
+    description_short: 'Deepening into folk-minimalism. Sparse arrangements focusing heavily on the lyricism of the soil, water, and shifting skylines.',
     tracks: [
       'Bhatiyali Mood',
       'Shorot',
@@ -92,14 +104,16 @@ export const ALBUMS: Album[] = [
       'Proshno',
       'Eka'
     ],
-    journalExcerpt: 'November 8. Water has a memory. If you listen closely to the river, it sings the exact same melodies that were sung a thousand years ago. We are just transcribing them.'
+    description_long: 'November 8. Water has a memory. If you listen closely to the river, it sings the exact same melodies that were sung a thousand years ago. We are just transcribing them.'
   },
   {
-    id: 'raw-vol-4',
+    release_id: 'raw-vol-4',
     title: 'Kaaktaal Raw, Vol. 4 (Version 01)',
+    release_date: '2022-02-03',
     year: '2022',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%2C%20Vol.%204%20(Version%2001).jpg',
-    description: 'An experimental divergence. Focuses on physical space, containing recordings made in abandoned railway stations and empty corridors.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%2C%20Vol.%204%20(Version%2001).jpg',
+    spotify_url: 'https://open.spotify.com/album/4RawVol4Example',
+    description_short: 'An experimental divergence. Focuses on physical space, containing recordings made in abandoned railway stations and empty corridors.',
     tracks: [
       'Station Platform',
       'Shunno Station',
@@ -107,14 +121,16 @@ export const ALBUMS: Album[] = [
       'Ondhokarer Gaan',
       'Midnight Echoes'
     ],
-    journalExcerpt: 'February 3. Sound is shaped by what it bounces off of. A high-ceilinged stone railway hall adds a cathedral-like sacredness to a simple steel-string slide.'
+    description_long: 'February 3. Sound is shaped by what it bounces off of. A high-ceilinged stone railway hall adds a cathedral-like sacredness to a simple steel-string slide.'
   },
   {
-    id: 'raw-vol-5',
+    release_id: 'raw-vol-5',
     title: 'Kaaktaal Raw Volume 05',
+    release_date: '2023-08-14',
     year: '2023',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2005.jpg',
-    description: 'Written during a period of prolonged isolation. A quiet collection of lullabies for restless minds and people who cannot sleep.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2005.jpg',
+    spotify_url: 'https://open.spotify.com/album/5RawVol5Example',
+    description_short: 'Written during a period of prolonged isolation. A quiet collection of lullabies for restless minds and people who cannot sleep.',
     tracks: [
       'Ghumer Gaan',
       'Nishachor',
@@ -122,14 +138,16 @@ export const ALBUMS: Album[] = [
       'Phire Asha',
       'Bhorer Alo'
     ],
-    journalExcerpt: 'August 14. This is for the ones who lie awake listening to the fan spin. I wanted to make music that feels like a hand on your forehead when the night gets too long.'
+    description_long: 'August 14. This is for the ones who lie awake listening to the fan spin. I wanted to make music that feels like a hand on your forehead when the night gets too long.'
   },
   {
-    id: 'raw-vol-6',
+    release_id: 'raw-vol-6',
     title: 'Kaaktaal Raw Volume 06',
+    release_date: '2024-12-28',
     year: '2024',
-    coverUrl: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2006.jpg',
-    description: 'The latest chapter of raw documentation. Reflective, deeply melodic, and embracing the cracks and hiss of imperfect tape machinery.',
+    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2006.jpg',
+    spotify_url: 'https://open.spotify.com/album/6RawVol6Example',
+    description_short: 'The latest chapter of raw documentation. Reflective, deeply melodic, and embracing the cracks and hiss of imperfect tape machinery.',
     tracks: [
       'Shesh Kotha',
       'The Hiss of Tape',
@@ -137,7 +155,7 @@ export const ALBUMS: Album[] = [
       'Pothik',
       'Smritir Ghor (Outro)'
     ],
-    journalExcerpt: 'December 28. It is the imperfections that make things human. The crackle on the tape is not a flaw; it is the sound of time passing through the copper wire. We leave the doors open so the world can leak in.'
+    description_long: 'December 28. It is the imperfections that make things human. The crackle on the tape is not a flaw; it is the sound of time passing through the copper wire. We leave the doors open so the world can leak in.'
   }
 ];
 

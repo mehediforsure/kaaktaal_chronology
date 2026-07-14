@@ -10,13 +10,33 @@ export type ActiveRoom =
 export type FinderTab = 'seek' | 'music' | 'map' | 'few-far';
 
 export interface Album {
-  id: string;
+  release_id: string;
   title: string;
+  release_date?: string;
   year: string;
-  coverUrl: string;
-  description: string;
+  cover_image: string;
+  spotify_url?: string;
+  description_short: string;
+  description_long?: string;
   tracks: string[];
-  journalExcerpt?: string;
+}
+
+export interface Song {
+  song_id: string;
+  title_en: string;
+  title_bn?: string;
+  release_id?: string;
+  album?: string;
+  duration?: string;
+  year_released?: string | number;
+  cover_image?: string;
+  youtube_url?: string;
+  spotify_url?: string;
+  description_short?: string;
+  description_long?: string;
+  lyrics_available?: boolean;
+  status?: string;
+  lyrics?: string;
 }
 
 export interface RecommendationPackage {

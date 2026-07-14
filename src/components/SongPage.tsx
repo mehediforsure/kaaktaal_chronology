@@ -4,30 +4,64 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { getSongVersions, SongVersion } from '../data/song-versions';
 import { getBorrowedMeaningsForSong, saveBorrowedMeaning, RANDOM_QUESTIONS, BorrowedMeaning } from '../data/audience-meanings';
-import { Music, FileText, BookOpen, GitBranch, Heart, Globe, MapPin, User, ChevronRight, Play, Pause } from 'lucide-react';
+import { Music, FileText, BookOpen, GitBranch, Heart, Globe, MapPin, User, ChevronRight, ExternalLink } from 'lucide-react';
 import useEngagement from '../hooks/useEngagement';
 import { getOptimizedImageUrl } from '../utils/image';
+import { Song } from '../types';
 
-interface SongPageProps {
-  songTitle: string;
-  albumTitle: string;
+import { fetchSongs, fetchLyricsForSong } from '../lib/supabase';
+
+export interface SongPageProps {
+  song_id?: string;
+  title_en?: string;
+  title_bn?: string;
+  album?: string;
+  duration?: string;
+  year_released?: string;
+  cover_image?: string;
+  youtube_url?: string;
+  spotify_url?: string;
+  lyrics_available?: boolean;
+  status?: string;
+  description_short?: string;
+  description_long?: string;
+  lyrics?: string;
+
+  // Compatibility props
+  songTitle?: string;
+  albumTitle?: string;
   onClose: () => void;
   defaultLyrics?: string;
   defaultStory?: string;
+  songData?: Song;
 }
 
 type SongTab = 'overview' | 'lyrics' | 'stories' | 'versions' | 'meanings';
 
 export default function SongPage({
+  song_id,
+  title_en,
+  title_bn,
+  album,
+  duration,
+  year_released,
+  cover_image,
+  youtube_url,
+  spotify_url,
+  lyrics_available,
+  status,
+  description_short,
+  description_long,
+  lyrics,
   songTitle,
   albumTitle,
   onClose,
   defaultLyrics,
-  defaultStory
+  defaultStory,
+  songData
 }: SongPageProps) {
   const { logAction } = useEngagement();
   const [activeTab, setActiveTab] = useState<SongTab>('overview');
-  const [isPlaying, setIsPlaying] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [meaningsList, setMeaningsList] = useState<BorrowedMeaning[]>([]);
@@ -38,19 +72,103 @@ export default function SongPage({
   const [formCity, setFormCity] = useState('');
   const [formInput, setFormInput] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // State for live fetched song data from Supabase
+  const [liveSong, setLiveSong] = useState<Song | null>(null);
+  const [liveLyrics, setLiveLyrics] = useState<string | null>(null);
+  const [liveTitleBn, setLiveTitleBn] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadLiveSong() {
+      const targetId = song_id || songTitle?.toLowerCase().replace(/[\s\(\)\-\.]/g, '');
+      if (targetId) {
+        if (targetId.toUpperCase().startsWith('KTL')) {
+          const results = await fetchSongs(targetId);
+          if (results && results.length > 0) {
+            setLiveSong(results[0]);
+            return;
+          }
+        }
+        
+        const allSongs = await fetchSongs();
+        if (allSongs && allSongs.length > 0) {
+          const normTarget = targetId.toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
+          const matched = allSongs.find(s => {
+            const sId = (s.song_id || '').toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
+            const sTitle = (s.title_en || '').toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
+            return sId === normTarget || sTitle === normTarget || sTitle.includes(normTarget) || normTarget.includes(sTitle);
+          });
+          if (matched) {
+            setLiveSong(matched);
+          }
+        }
+      }
+    }
+    loadLiveSong();
+  }, [song_id, songTitle]);
+
+  // Resolved values mapped to database column names (prioritizes live database data)
+  const activeData = liveSong || songData;
+  const resolvedSongId = song_id || activeData?.song_id || (songTitle ? songTitle.toLowerCase().replace(/[\s\(\)\-\.]/g, '') : 'song-01');
+
+  useEffect(() => {
+    async function loadLyrics() {
+      if (resolvedSongId) {
+        const targetId = resolvedSongId.toUpperCase().trim();
+        const lyricsRecord = await fetchLyricsForSong(targetId);
+        if (lyricsRecord) {
+          if (lyricsRecord.lyrics) {
+            setLiveLyrics(lyricsRecord.lyrics);
+          }
+          if (lyricsRecord.title_bn) {
+            setLiveTitleBn(lyricsRecord.title_bn);
+          }
+        } else {
+          setLiveLyrics(null);
+          setLiveTitleBn(null);
+        }
+      }
+    }
+    loadLyrics();
+  }, [resolvedSongId]);
+
+  const formattedSongId = resolvedSongId.toUpperCase().startsWith('KTL') 
+    ? resolvedSongId.toUpperCase() 
+    : `#KT-${resolvedSongId.toUpperCase()}`;
+  const resolvedTitleEn = title_en || activeData?.title_en || songTitle || 'Untitled Song';
+  const resolvedTitleBn = title_bn || activeData?.title_bn || liveTitleBn;
+  const resolvedAlbum = album || activeData?.album || albumTitle || 'Kaaktaal Archive';
+  const resolvedDuration = duration || activeData?.duration || '03:45';
+  const resolvedYear = year_released || activeData?.year_released || '2025';
+  const resolvedCoverImage = cover_image || activeData?.cover_image;
+  const resolvedYoutubeUrl = youtube_url || activeData?.youtube_url;
+  const resolvedSpotifyUrl = spotify_url || activeData?.spotify_url;
+  const resolvedLyricsAvailable = lyrics_available ?? (liveLyrics ? true : activeData?.lyrics_available) ?? true;
+  const resolvedStatus = status || activeData?.status || 'Released';
+  const resolvedDescShort = description_short || activeData?.description_short || 'This track is preserved in our primary physical cabinet under catalog index. Recorded live directly to a single-channel magnetic cassette deck.';
+  const resolvedDescLong = description_long || activeData?.description_long || defaultStory || `This song was written in a single afternoon sitting on the red stairs of a weathered building in Chittagong. We had no microphones, just a cheap phone voice-recorder and a guitar with rusty strings. The background noise of stray crows and street vendors shouting is the true heartbeat of the track.`;
+  const resolvedLyrics = lyrics || liveLyrics || activeData?.lyrics || defaultLyrics || `শৈশব নদী বয়ে চলে নিরবধি,
+আমরা তো চেয়েছিলাম দেখা হোক যদি।
+ফ্রেমে বাঁধা ছবিটা ধূলো পড়ে আজ,
+বেদনার বুক জুড়ে শ্রাবণের সাজ।
+
+আবার দেখা হলে পথ ভুলে যেও না,
+পুরনো চেনা সেই গানটা গেও না।
+ইথারে ভেসে চলা কান্নার সুর,
+তুমি কি চলে গেছ বহু বহুদূর?`;
   
   // Versions Timeline list
-  const versions: SongVersion[] = getSongVersions(songTitle);
+  const versions: SongVersion[] = getSongVersions(resolvedTitleEn);
 
   // Load Meanings
   useEffect(() => {
-    setMeaningsList(getBorrowedMeaningsForSong(songTitle));
-  }, [songTitle]);
+    setMeaningsList(getBorrowedMeaningsForSong(resolvedTitleEn));
+  }, [resolvedTitleEn]);
 
   // Roll a random question on mount & when song page changes
   useEffect(() => {
     rollRandomQuestion();
-  }, [songTitle]);
+  }, [resolvedTitleEn]);
 
   const rollRandomQuestion = () => {
     const randomIndex = Math.floor(Math.random() * RANDOM_QUESTIONS.length);
@@ -62,10 +180,6 @@ export default function SongPage({
     setActiveTab(tab);
   };
 
-  const handlePlayToggle = () => {
-    logAction('journal_interaction');
-    setIsPlaying(!isPlaying);
-  };
 
   const handleOpenSubmission = () => {
     rollRandomQuestion();
@@ -79,7 +193,7 @@ export default function SongPage({
     if (!formInput.trim()) return;
 
     const saved = saveBorrowedMeaning({
-      songTitle: songTitle,
+      songTitle: resolvedTitleEn,
       fromName: isAnonymous ? 'Anonymous' : (formName || 'Someone'),
       isAnonymous: isAnonymous,
       city: formCity || 'Unknown Location',
@@ -99,19 +213,6 @@ export default function SongPage({
     }, 2500);
   };
 
-  // Default lyrics if none provided
-  const lyricsText = defaultLyrics || `শৈশব নদী বয়ে চলে নিরবধি,
-আমরা তো চেয়েছিলাম দেখা হোক যদি।
-ফ্রেমে বাঁধা ছবিটা ধূলো পড়ে আজ,
-বেদনার বুক জুড়ে শ্রাবণের সাজ।
-
-আবার দেখা হলে পথ ভুলে যেও না,
-পুরনো চেনা সেই গানটা গেও না।
-ইথারে ভেসে চলা কান্নার সুর,
-তুমি কি চলে গেছ বহু বহুদূর?`;
-
-  const storyText = defaultStory || `This song was written in a single afternoon sitting on the red stairs of a weathered building in Chittagong. We had no microphones, just a cheap phone voice-recorder and a guitar with rusty strings. The background noise of stray crows and street vendors shouting is the true heartbeat of the track. When we later pressed it onto tape, we chose to preserve the crackle of that original afternoon loop.`;
-
   return (
     <div className="bg-bg border-2 border-ink rounded-sm shadow-[4px_4px_0px_rgba(17,17,19,0.2)] text-ink overflow-hidden max-w-4xl mx-auto my-6">
       
@@ -120,16 +221,24 @@ export default function SongPage({
         <div>
           <div className="flex items-center gap-2 text-[10px] font-mono text-ink/50 uppercase tracking-widest mb-1.5">
             <span>Indexed Song Track</span>
-            <ChevronRight className="w-3 h-3 text-accent" />
-            <span className="font-bold text-accent">{albumTitle}</span>
+            <ChevronRight className="w-3 h-3 text-ink" />
+            <span className="font-bold text-ink/75">{resolvedAlbum}</span>
+            <span className="font-mono text-[9px] uppercase px-2 py-0.5 rounded-xs border border-ink/20 text-ink/70 font-bold ml-2">
+              {resolvedStatus}
+            </span>
           </div>
-          <h2 className="font-syne text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-ink">
-            {songTitle}
+          <h2 className="font-syne text-3xl md:text-4xl font-extrabold uppercase tracking-tight text-ink flex flex-wrap items-baseline gap-3">
+            <span>{resolvedTitleEn}</span>
+            {resolvedTitleBn && (
+              <span className="text-2.5xl md:text-3.5xl text-ink/60 font-serif font-normal">
+                ({resolvedTitleBn})
+              </span>
+            )}
           </h2>
         </div>
         <button
           onClick={onClose}
-          className="font-mono text-xs uppercase tracking-widest text-ink hover:text-bg hover:bg-ink border-2 border-ink py-1.5 px-3.5 rounded-xs transition-colors cursor-pointer font-bold select-none"
+          className="font-mono text-xs uppercase tracking-widest text-ink hover:text-bg hover:bg-ink border-2 border-ink py-1.5 px-3.5 rounded-xs transition-colors cursor-pointer font-bold select-none shrink-0"
         >
           Close Drawer ×
         </button>
@@ -178,48 +287,23 @@ export default function SongPage({
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
                 {/* Left card description */}
                 <div className="md:col-span-7 space-y-6">
+                  {resolvedCoverImage && (
+                    <div className="aspect-square w-full border-2 border-ink rounded-sm overflow-hidden shadow-xs">
+                      <img
+                        src={getOptimizedImageUrl(resolvedCoverImage, 800)}
+                        alt={resolvedTitleEn}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  
                   <div className="space-y-3">
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-accent font-bold px-2 py-0.5 border border-accent/20 rounded-xs inline-block">
-                      Archive Log #KT-{songTitle.length * 7}
-                    </span>
                     <h3 className="font-sans text-xl font-semibold leading-relaxed italic text-ink/95">
-                      "Some songs do not stay the same. They breathe, collect dust, and shift meaning with every hand that receives them."
+                      "{resolvedDescShort}"
                     </h3>
                   </div>
 
-                  <p className="font-sans text-sm text-ink/75 leading-relaxed">
-                    This track is preserved in our primary physical cabinet under catalog index #KT-SF. Recorded live directly to a single-channel magnetic cassette deck. It contains raw, uncompressed frequencies that respond beautifully to late-night contemplation.
-                  </p>
 
-                  {/* Atmospheric Vibe Audio Player */}
-                  <div className="p-5 border-2 border-ink rounded-sm bg-[#faf8f5] shadow-[2px_2px_0px_rgba(17,17,19,0.1)] flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <button
-                        onClick={handlePlayToggle}
-                        className={`w-12 h-12 rounded-full border-2 border-ink flex items-center justify-center cursor-pointer transition-all ${
-                          isPlaying ? 'bg-accent text-bg border-accent' : 'bg-bg text-ink hover:bg-ink hover:text-bg'
-                        }`}
-                      >
-                        {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 pl-0.5" />}
-                      </button>
-                      <div>
-                        <p className="font-syne text-xs uppercase tracking-wider font-extrabold text-ink">
-                          {isPlaying ? 'Tuning magnetic frequency...' : 'Play atmospheric preview'}
-                        </p>
-                        <p className="font-mono text-[10px] text-ink/50">
-                          {isPlaying ? 'Hum & crackle loop active // 128kbps' : 'Click to hear raw tape hiss'}
-                        </p>
-                      </div>
-                    </div>
-                    {isPlaying && (
-                      <div className="flex gap-1 items-end h-6 select-none">
-                        <span className="w-1 bg-accent/80 rounded-full animate-pulse h-3" />
-                        <span className="w-1 bg-accent/80 rounded-full animate-pulse h-5" />
-                        <span className="w-1 bg-accent/80 rounded-full animate-pulse h-2" />
-                        <span className="w-1 bg-accent/80 rounded-full animate-pulse h-4" />
-                      </div>
-                    )}
-                  </div>
                 </div>
 
                 {/* Right technical ledger */}
@@ -230,26 +314,50 @@ export default function SongPage({
                     </h4>
                     <div className="font-mono text-xs text-ink/80 space-y-2.5">
                       <div className="flex justify-between">
-                        <span className="text-ink/40">FORMAT:</span>
-                        <span className="font-bold">Cassette Tape</span>
+                        <span className="text-ink/40">SONG ID:</span>
+                        <span className="font-bold">{formattedSongId}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-ink/40">TUNING:</span>
-                        <span className="font-bold">Drop D (Acoustic)</span>
+                        <span className="text-ink/40">DURATION:</span>
+                        <span className="font-bold">{resolvedDuration}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-ink/40">RECORDER:</span>
-                        <span className="font-bold">4-Track PortaOne</span>
+                        <span className="text-ink/40">YEAR RELEASED:</span>
+                        <span className="font-bold">{resolvedYear}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-ink/40">ATMOSPHERE:</span>
-                        <span className="font-bold text-accent">Monsoon Hum</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-ink/40">LOCATION:</span>
-                        <span className="font-bold">Dhaka, Bangladesh</span>
+                        <span className="text-ink/40">STATUS:</span>
+                        <span className="font-bold text-accent">{resolvedStatus}</span>
                       </div>
                     </div>
+
+                    {/* External Streaming Links */}
+                    {(resolvedSpotifyUrl || resolvedYoutubeUrl) && (
+                      <div className="pt-3 border-t border-ink/10 space-y-2">
+                        {resolvedSpotifyUrl && (
+                          <a
+                            href={resolvedSpotifyUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-2.5 border border-ink bg-[#1DB954]/10 hover:bg-[#1DB954]/20 rounded-xs font-mono text-[10px] uppercase font-bold tracking-wider text-ink transition-colors"
+                          >
+                            <span>Listen on Spotify</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-accent" />
+                          </a>
+                        )}
+                        {resolvedYoutubeUrl && (
+                          <a
+                            href={resolvedYoutubeUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center justify-between p-2.5 border border-ink bg-[#FF0000]/10 hover:bg-[#FF0000]/20 rounded-xs font-mono text-[10px] uppercase font-bold tracking-wider text-ink transition-colors"
+                          >
+                            <span>Watch on YouTube</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-accent" />
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
 
                   <div className="p-4 border border-dashed border-ink/20 rounded-sm text-center">
@@ -267,22 +375,30 @@ export default function SongPage({
             {/* 2. LYRICS TAB */}
             {activeTab === 'lyrics' && (
               <div className="max-w-xl mx-auto py-4 text-center">
-                <div className="inline-block text-left bg-white/40 border border-ink/5 p-8 md:p-12 rounded-sm shadow-xs min-w-[280px] sm:min-w-[400px]">
-                  <pre className="font-garamond text-lg md:text-xl text-ink leading-loose whitespace-pre-wrap text-center select-text">
-                    {lyricsText}
-                  </pre>
-                  
-                  {/* Small decorative page separator */}
-                  <div className="mt-10 flex items-center justify-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-ink/20" />
-                    <span className="w-8 h-[1px] bg-ink/15" />
-                    <span className="w-1.5 h-1.5 rounded-full bg-ink/20" />
+                {!resolvedLyricsAvailable ? (
+                  <div className="p-8 border border-dashed border-ink/20 rounded-sm bg-ink/[0.02]">
+                    <p className="font-sans text-sm italic text-ink/60">
+                      Lyrics are currently marked as unavailable or instrumental for this track log.
+                    </p>
                   </div>
-                  
-                  <span className="font-mono text-[8px] uppercase tracking-widest text-ink/30 text-center block mt-3">
-                    Preserved from original handwritten journals // 2026
-                  </span>
-                </div>
+                ) : (
+                  <div className="inline-block text-left bg-white/40 border border-ink/5 p-8 md:p-12 rounded-sm shadow-xs min-w-[280px] sm:min-w-[400px]">
+                    <pre className="font-garamond text-lg md:text-xl text-ink leading-loose whitespace-pre-wrap text-center select-text">
+                      {resolvedLyrics}
+                    </pre>
+                    
+                    {/* Small decorative page separator */}
+                    <div className="mt-10 flex items-center justify-center gap-2">
+                      <span className="w-1.5 h-1.5 rounded-full bg-ink/20" />
+                      <span className="w-8 h-[1px] bg-ink/15" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-ink/20" />
+                    </div>
+                    
+                    <span className="font-mono text-[8px] uppercase tracking-widest text-ink/30 text-center block mt-3">
+                      Preserved from original handwritten journals // {resolvedYear}
+                    </span>
+                  </div>
+                )}
               </div>
             )}
 
@@ -297,8 +413,8 @@ export default function SongPage({
                 </div>
 
                 <div className="space-y-6">
-                  <p className="font-garamond text-lg sm:text-xl text-ink/85 leading-relaxed italic first-letter:text-4xl first-letter:font-syne first-letter:font-extrabold first-letter:float-left first-letter:mr-3 first-letter:text-accent select-text">
-                    {storyText}
+                  <p className="font-garamond text-lg sm:text-xl text-ink/85 leading-relaxed italic first-letter:text-4xl first-letter:font-syne first-letter:font-extrabold first-letter:float-left first-letter:mr-3 first-letter:text-accent select-text whitespace-pre-line">
+                    {resolvedDescLong}
                   </p>
                 </div>
 
@@ -308,7 +424,7 @@ export default function SongPage({
                       FIELD ARCHIVIST NOTES:
                     </p>
                     <p className="font-sans text-xs text-ink/70 leading-relaxed">
-                      "The microphone used for the vocal draft is incredibly sensitive to moisture. The humidity of the room in Bangladesh literally altered the frequency response, making the vocals sound warm but heavily compressed."
+                      "The microphone used for the vocal draft is sensitive to moisture. The room conditions altered the frequency response, giving the track its distinctive tape atmosphere."
                     </p>
                   </div>
                 </div>
@@ -352,7 +468,7 @@ export default function SongPage({
                       <div className="border-2 border-ink bg-bg p-5 rounded-sm shadow-[3px_3px_0px_rgba(17,17,19,0.15)] space-y-4">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-ink/10 pb-3">
                           <h4 className="font-syne text-md font-bold uppercase tracking-tight text-ink">
-                            {ver.title}
+                            {resolvedTitleEn} (Evolution Outline)
                           </h4>
                           <div>
                             <span className="font-mono text-[9px] uppercase tracking-widest px-2 py-0.5 font-bold rounded-xs bg-ink text-bg">
@@ -362,25 +478,18 @@ export default function SongPage({
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-                          {/* Photo placeholder if available, else standard silhouette */}
+                          {/* Plain color placeholder block instead of photo */}
                           <div className="md:col-span-3">
-                            <div className="aspect-[4/3] bg-neutral-200 border border-ink overflow-hidden rounded-xs relative group shadow-sm">
-                              <img
-                                src={getOptimizedImageUrl(ver.photoUrl || "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?w=400&auto=format&fit=crop&q=60", 350)}
-                                alt="Version capture"
-                                className="w-full h-full object-cover filter grayscale duration-500 group-hover:scale-102"
-                                referrerPolicy="no-referrer"
-                                loading="lazy"
-                              />
-                              <div className="absolute inset-0 bg-ink/10 flex items-center justify-center">
-                                <span className="font-mono text-[8px] uppercase tracking-widest text-bg bg-ink/80 px-1 py-0.5">
+                            <div className="aspect-[4/3] bg-ink/5 border border-ink overflow-hidden rounded-xs relative group shadow-sm">
+                              <div className="absolute inset-0 bg-ink/5 flex items-center justify-center">
+                                <span className="font-mono text-[8px] uppercase tracking-widest text-ink/65 px-1.5 py-0.5 border border-ink/10 bg-bg rounded-xs">
                                   {ver.year} Archive
                                 </span>
                               </div>
                             </div>
                           </div>
 
-                          {/* Description & button */}
+                          {/* Description */}
                           <div className="md:col-span-9 space-y-3">
                             <p className="font-sans text-xs sm:text-sm text-ink/80 leading-relaxed">
                               {ver.description}
@@ -391,18 +500,6 @@ export default function SongPage({
                                 "{ver.optionalNote}"
                               </p>
                             )}
-
-                            <div className="pt-2">
-                              <button
-                                onClick={() => {
-                                  logAction('journal_interaction');
-                                  alert(`Frequency check: Merging loop loop.0${idx + 1} with tape deck. Hum volume loaded.`);
-                                }}
-                                className="flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-widest border border-ink/40 hover:border-ink hover:bg-ink hover:text-bg py-1 px-2.5 rounded-xs transition-colors cursor-pointer select-none font-bold"
-                              >
-                                <Play className="w-2.5 h-2.5" /> Synthesize frequency loop
-                              </button>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -428,9 +525,9 @@ export default function SongPage({
 
                   <button
                     onClick={handleOpenSubmission}
-                    className="font-mono text-xs uppercase tracking-widest text-bg bg-accent hover:bg-accent-light border border-accent py-2 px-4 rounded-xs transition-colors cursor-pointer font-extrabold shadow-sm flex items-center gap-2 select-none"
+                    className="font-mono text-xs uppercase tracking-widest text-ink bg-ink-faint hover:bg-ink hover:text-bg border border-ink/30 hover:border-ink py-2 px-4 rounded-xs transition-colors cursor-pointer font-extrabold shadow-sm select-none"
                   >
-                    <span>✦</span> Leave a Memory
+                    Leave a Memory
                   </button>
                 </div>
 
@@ -624,7 +721,7 @@ export default function SongPage({
                       type="submit"
                       className="font-mono text-xs uppercase tracking-widest text-bg bg-ink hover:bg-accent border border-ink hover:border-accent py-2 px-4 rounded-xs transition-colors cursor-pointer font-extrabold shadow-sm select-none"
                     >
-                      Commit to Archive ✦
+                      Commit to Archive
                     </button>
                   </div>
                 </form>

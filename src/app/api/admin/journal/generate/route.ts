@@ -8,11 +8,26 @@ async function handleGenerate(req: Request) {
     const draft = await generateJournal();
     console.log("[Admin Journal] Draft generated successfully:", draft.title);
 
-    // Construct site admin link
-    const host = req.headers.get("host") || "kaaktaal.com";
-    const protocol = host.includes("localhost") ? "http" : "https";
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || `${protocol}://${host}`;
-    const adminUrl = `${baseUrl.replace(/\/$/, "")}/admin/journal`;
+    // Construct site admin link (prefer explicit ADMIN_PANEL_URL or main domain)
+    let adminUrl = process.env.ADMIN_PANEL_URL;
+
+    if (!adminUrl) {
+      let baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL;
+
+      if (!baseUrl && process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+        baseUrl = `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+      }
+
+      if (!baseUrl) {
+        const host = req.headers.get("host") || "kaaktaal.com";
+        const protocol = host.includes("localhost") ? "http" : "https";
+        baseUrl = `${protocol}://${host}`;
+      }
+
+      adminUrl = `${baseUrl.replace(/\/$/, "")}/admin/journal`;
+    }
+
+
 
     // Send Telegram Notification (must be awaited in serverless context)
     const telegramMsg = `🌧️ <b>Kaaktaal Journal Draft Ready for Review</b>\n\n<b>Title:</b> ${draft.title}\n\n<b>Content:</b>\n<i>"${draft.content}"</i>\n\n👉 <a href="${adminUrl}">Tap here to Review & Publish</a>`;

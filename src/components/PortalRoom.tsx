@@ -290,7 +290,7 @@ export default function PortalRoom({ onRoomChange, triggerRandomAccident }: Port
           recommendation.song.album.replace(/\s+/g, '').toLowerCase()
       )
     : null;
-  const songCoverUrl = matchingAlbum?.coverUrl;
+  const songCoverUrl = matchingAlbum?.cover_image;
 
   const handleSelect = (questionId: string, value: string) => {
     const updatedAnswers = { ...answers, [questionId]: value };

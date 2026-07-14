@@ -1,12 +1,24 @@
 export interface CuratedSong {
-  id: string;
-  title: string;
-  reason: string;
+  song_id?: string;
+  title_en?: string;
+  title_bn?: string;
   album: string;
   duration?: string;
+  year_released?: string;
+  cover_image?: string;
+  youtube_url?: string;
+  spotify_url?: string;
+  lyrics_available?: boolean;
+  status?: string;
+  description_short?: string;
+  description_long?: string;
   lyrics?: string;
+  
+  // Legacy fallback compatibility keys
+  id?: string;
+  title?: string;
+  reason?: string;
   story?: string;
-  audioUrl?: string;
 }
 
 export interface CuratedCollection {
@@ -27,23 +39,36 @@ export const CURATED_COLLECTIONS: CuratedCollection[] = [
     coverUrl: '',
     songs: [
       {
-        id: 'chorki',
-        title: 'চর্কি (Chorki)',
-        reason: '“বাড়তে দাও বুনো ঝোপের মতোন করে”',
+        song_id: 'chorki',
+        title_en: 'Chorki',
+        title_bn: 'চর্কি',
         album: 'The Attic Reels // Tape Loop 03',
-        duration: '3:45',
+        duration: '03:45',
+        year_released: '2024',
+        cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Kaaktaal%20Raw%20Volume%2002.jpg',
+        youtube_url: 'https://youtube.com/watch?v=chorki_example',
+        spotify_url: 'https://open.spotify.com/track/chorki_example',
+        lyrics_available: true,
+        status: 'Released',
+        description_short: '“বাড়তে দাও বুনো ঝোপের মতোন করে”',
+        description_long: 'Recorded in the summer of 2019 on a vintage Sony TCM-200DV tape recorder. The microphone was placed inside a hollow earthenware pot to create a deep, claustrophobic reverb. The sound of banyan leaves scraping against the windowpane is audible in the background.',
         lyrics: `বাড়তে দাও বুনো ঝোঁপের মতোন করে
 শুকিয়ে যেতে দাও ফুল যেমন ঝরে
 গভীর হতে দাও আমার গভীরে
-রাতের সাথে অন্ধকার যেমন বাড়ে।`,
-        story: 'Recorded in the summer of 2019 on a vintage Sony TCM-200DV tape recorder. The microphone was placed inside a hollow earthenware pot to create a deep, claustrophobic reverb. The sound of banyan leaves scraping against the windowpane is audible in the background.'
+রাতের সাথে অন্ধকার যেমন বাড়ে।`
       },
       {
-        id: 'verandah-draft',
-        title: 'The Dust of Old Verandahs',
-        reason: '“A study on what remains after everything is swept away.”',
+        song_id: 'verandah-draft',
+        title_en: 'The Dust of Old Verandahs',
         album: 'Unreleased Draft // 2021',
-        duration: '4:12',
+        duration: '04:12',
+        year_released: '2021',
+        cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2001.jpg',
+        spotify_url: 'https://open.spotify.com/track/verandah_example',
+        lyrics_available: true,
+        status: 'Unreleased',
+        description_short: '“A study on what remains after everything is swept away.”',
+        description_long: 'This piece was played entirely on a vintage zinc-resonator slide guitar. It was recorded in a single take during a power outage in Dhanmondi. The rhythmic creaking of an antique rocking chair acts as the only percussion.',
         lyrics: `The wind is sweeping the dust
 Of old verandahs we used to trust.
 A cup of tea turned cold and grey,
@@ -52,38 +77,45 @@ Nothing more remains to say.
 Step light on the worn-out tile,
 We haven't met in a long, long while.
 Let the shadows stretch their hands,
-Over these forgotten lands.`,
-        story: 'This piece was played entirely on a vintage zinc-resonator slide guitar. It was recorded in a single take during a power outage in Dhanmondi. The rhythmic creaking of an antique rocking chair acts as the only percussion.'
+Over these forgotten lands.`
       },
       {
-        id: 'silent-letters',
-        title: 'Silent Letters on Wood',
-        reason: '“Words carved into school desks that never reached their destination.”',
+        song_id: 'silent-letters',
+        title_en: 'Silent Letters on Wood',
+        title_bn: 'কাঠের বুকে নাম',
         album: 'The Attic Reels // Box 02',
-        duration: '2:50',
+        duration: '02:50',
+        year_released: '2022',
+        lyrics_available: true,
+        status: 'Archived',
+        description_short: '“Words carved into school desks that never reached their destination.”',
+        description_long: 'A minimalist acoustic loop played on a detuned nylon string guitar. It features whispers recorded by the band members while reading through old postcards from the 1970s found at a flea market.',
         lyrics: `কাঠের বুকে খোদাই করা নাম,
 ফেরত এসেছে না পাঠানো খাম।
 অক্ষরেরা স্তব্ধ হয়ে আছে,
 শুকনো পাতার মতন মরা গাছে।
 
 তুমি তো বোঝোনি নিরবতার মানে,
-যে সুর হারিয়ে যায় ধুলোবালি গানে।`,
-        story: 'A minimalist acoustic loop played on a detuned nylon string guitar. It features whispers recorded by the band members while reading through old postcards from the 1970s found at a flea market.'
+যে সুর হারিয়ে যায় ধুলোবালি গানে।`
       },
       {
-        id: 'rain-sketch',
-        title: 'Aakash Bhanga Brishti',
-        reason: '“A tribute to the sudden fury of a July afternoon.”',
+        song_id: 'rain-sketch',
+        title_en: 'Aakash Bhanga Brishti',
+        title_bn: 'আকাশ ভেঙে বৃষ্টি',
         album: 'Room Recordings // Vol. 1',
-        duration: '5:04',
+        duration: '05:04',
+        year_released: '2022',
+        lyrics_available: true,
+        status: 'Released',
+        description_short: '“A tribute to the sudden fury of a July afternoon.”',
+        description_long: 'Recorded by placing a stereo pair of microphones on a covered balcony during the height of the 2022 monsoon. The guitar is tuned to Open D, allowed to drone continuously under the downpour.',
         lyrics: `আকাশ ভেঙে নামুক ধারা,
 পথ ভুলে যাক পথিক দিশাহারা।
 মেঘের গর্জনে কেঁপে উঠুক বুক,
 বৃষ্টি ধুয়ে দিক চেনা সব মুখ।
 
 আমরা তো ভিজেছিলাম এক সাথে,
-আজ একা দাঁড়িয়ে শূন্য এই রাতে।`,
-        story: 'Recorded by placing a stereo pair of microphones on a covered balcony during the height of the 2022 monsoon. The guitar is tuned to Open D, allowed to drone continuously under the downpour.'
+আজ একা দাঁড়িয়ে শূন্য এই রাতে।`
       }
     ]
   },

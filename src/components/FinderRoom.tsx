@@ -40,7 +40,7 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest font-extrabold text-bg bg-ink hover:bg-accent border-2 border-ink hover:border-accent py-2.5 px-5 rounded-xs transition-colors cursor-pointer shadow-[3px_3px_0px_rgba(17,17,19,0.15)] select-none"
             >
-              Enter Ticket Gateway ✦
+              Enter Ticket Gateway
             </a>
             <span className="font-mono text-[9px] text-ink/40 mt-2.5 block">
               REDIRECT GATEWAY: ashor.vercel.app
@@ -64,7 +64,7 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest font-extrabold text-bg bg-ink hover:bg-accent border-2 border-ink hover:border-accent py-2.5 px-5 rounded-xs transition-colors cursor-pointer shadow-[3px_3px_0px_rgba(17,17,19,0.15)] select-none"
             >
-              View Exclusive T-Shirt ✦
+              View Exclusive T-Shirt
             </a>
             <span className="font-mono text-[9px] text-ink/40 mt-2.5 block">
               REDIRECT GATEWAY: teashirthut.com
@@ -108,7 +108,7 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
               disabled
               className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-widest font-extrabold text-ink/40 bg-ink/5 border-2 border-ink/20 py-2.5 px-5 rounded-xs select-none cursor-not-allowed"
             >
-              Song Book (Coming Soon) ✦
+              Song Book (Coming Soon)
             </button>
           </div>
         </div>

@@ -10,7 +10,7 @@ import { getOptimizedImageUrl } from '../utils/image';
 import Crow from '../components/Crow';
 import WaveFooter from '../components/WaveFooter';
 import MemoryRoom from '../components/MemoryRoom';
-import { Menu, X } from 'lucide-react';
+import { Menu} from 'lucide-react';
 
 // Section/Room imports
 import { PortalCard, FinderCard } from '../components/DirectoryHero';
@@ -482,12 +482,12 @@ function AppContent() {
                   >
                     <span>Finder</span>
                     <span className="flex items-center justify-center">
-                      {isFinderNavOpen ? (
-                        <X className="w-[22px] h-[22px] sm:w-[28px] sm:h-[28px] text-accent" />
-                      ) : (
-                        <Menu className="w-[22px] h-[22px] sm:w-[28px] sm:h-[28px]" />
-                      )}
-                    </span>
+                     <Menu 
+                      className={`w-[22px] h-[22px] sm:w-[28px] sm:h-[28px] transition-transform duration-300 ${
+                       isFinderNavOpen ? 'rotate-90 text-accent' : 'rotate-0'
+                       }`} 
+                           />
+                  </span>
                   </button>
 
                   {isFinderNavOpen && (

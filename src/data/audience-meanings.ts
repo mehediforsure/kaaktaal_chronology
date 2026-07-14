@@ -79,7 +79,10 @@ export const DEFAULT_MEANINGS: BorrowedMeaning[] = [
   }
 ];
 
-export function getBorrowedMeaningsForSong(songTitle: string): BorrowedMeaning[] {
+export function getBorrowedMeaningsForSong(songTitle?: string): BorrowedMeaning[] {
+  if (!songTitle || typeof songTitle !== 'string') {
+    return DEFAULT_MEANINGS;
+  }
   // Load from local storage if exists, otherwise use defaults
   let stored: BorrowedMeaning[] = [];
   try {
@@ -98,6 +101,7 @@ export function getBorrowedMeaningsForSong(songTitle: string): BorrowedMeaning[]
   // Return meanings that match the song title (case insensitive, partial match)
   const normTitle = songTitle.toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
   return all.filter(m => {
+    if (!m.songTitle) return false;
     const mNorm = m.songTitle.toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
     return mNorm === normTitle || mNorm.includes(normTitle) || normTitle.includes(mNorm);
   });

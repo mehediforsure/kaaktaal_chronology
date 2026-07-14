@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { CURATED_COLLECTIONS, CuratedCollection, CuratedSong } from '../data/few-and-far-between';
 import SongPage from './SongPage';
-import { BookOpen, Music, Play, Pause, ArrowLeft, Calendar } from 'lucide-react';
+import { BookOpen, Music, ArrowLeft, Calendar } from 'lucide-react';
 import useEngagement from '../hooks/useEngagement';
 import { getOptimizedImageUrl } from '../utils/image';
 import shobEkhaneKolpona from '../assets/shob_ekhane_kolpona.png';
@@ -13,7 +13,6 @@ export default function FewAndFarBetween() {
   const { logAction } = useEngagement();
   const [selectedCollection, setSelectedCollection] = useState<CuratedCollection | null>(null);
   const [selectedSong, setSelectedSong] = useState<CuratedSong | null>(null);
-  const [playingSongId, setPlayingSongId] = useState<string | null>(null);
   const [hoveredCollection, setHoveredCollection] = useState<CuratedCollection | null>(null);
 
   const handleOpenCollection = (collection: CuratedCollection) => {
@@ -33,15 +32,6 @@ export default function FewAndFarBetween() {
     setSelectedSong(null);
   };
 
-  const handleToggleListen = (songId: string) => {
-    logAction('journal_interaction');
-    if (playingSongId === songId) {
-      setPlayingSongId(null);
-    } else {
-      setPlayingSongId(songId);
-    }
-  };
-
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-8 py-4 select-none min-h-[80vh] text-ink">
       
@@ -56,11 +46,21 @@ export default function FewAndFarBetween() {
             transition={{ duration: 0.5 }}
           >
             <SongPage
-              songTitle={selectedSong.title}
-              albumTitle={selectedSong.album}
+              song_id={selectedSong.song_id || selectedSong.id}
+              title_en={selectedSong.title_en || selectedSong.title}
+              title_bn={selectedSong.title_bn}
+              album={selectedSong.album}
+              duration={selectedSong.duration}
+              year_released={selectedSong.year_released}
+              cover_image={selectedSong.cover_image}
+              youtube_url={selectedSong.youtube_url}
+              spotify_url={selectedSong.spotify_url}
+              lyrics_available={selectedSong.lyrics_available}
+              status={selectedSong.status}
+              description_short={selectedSong.description_short || selectedSong.reason}
+              description_long={selectedSong.description_long || selectedSong.story}
+              lyrics={selectedSong.lyrics}
               onClose={handleCloseSong}
-              defaultLyrics={selectedSong.lyrics}
-              defaultStory={selectedSong.story}
             />
           </motion.div>
         ) : !selectedCollection ? (
@@ -172,18 +172,24 @@ export default function FewAndFarBetween() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {selectedCollection.songs.map((song) => {
-                  const isPlaying = playingSongId === song.id;
+                  const currentSongId = song.song_id || song.id || song.title_en;
+                  const displayTitle = song.title_en || song.title;
                   return (
                     <motion.div
-                      key={song.id}
+                      key={currentSongId}
                       className="border-2 border-ink p-5 rounded-xs bg-bg shadow-[3px_3px_0px_rgba(17,17,19,0.1)] relative flex flex-col justify-between hover:border-accent duration-300 group"
                     >
                       <div className="space-y-4">
                         {/* Title and metadata */}
                         <div className="flex justify-between items-start gap-4">
                           <div>
-                            <h3 className="font-syne text-xl font-extrabold uppercase tracking-tight text-ink group-hover:text-accent transition-colors">
-                              {song.title}
+                            <h3 className="font-syne text-xl font-extrabold uppercase tracking-tight text-ink group-hover:text-accent transition-colors flex items-baseline gap-2">
+                              <span>{displayTitle}</span>
+                              {song.title_bn && (
+                                <span className="text-[15px] font-serif text-ink/60 font-normal">
+                                  ({song.title_bn})
+                                </span>
+                              )}
                             </h3>
                             <span className="font-mono text-[9px] text-ink/50 uppercase block mt-0.5">
                               {song.album}
@@ -199,37 +205,18 @@ export default function FewAndFarBetween() {
                         {/* Hand-curated intimate Reason Quote box */}
                         <div className="py-4 px-4 bg-ink/[0.02] border-l-2 border-accent border-y border-r border-ink/5 rounded-r-xs my-2">
                           <p className="font-garamond text-md md:text-lg italic font-semibold text-ink leading-relaxed">
-                            {song.reason}
+                            {song.description_short || song.reason}
                           </p>
                         </div>
                       </div>
 
-                      {/* Action buttons */}
-                      <div className="flex items-center justify-between pt-4 border-t border-ink/5 mt-4">
-                        <button
-                          onClick={() => handleToggleListen(song.id)}
-                          className={`font-mono text-[10px] uppercase tracking-widest flex items-center gap-1.5 py-1 px-3 border rounded-xs transition-colors cursor-pointer select-none font-bold ${
-                            isPlaying
-                              ? 'bg-accent text-bg border-accent animate-pulse'
-                              : 'border-ink/20 hover:border-ink hover:bg-ink-faint text-ink/75 hover:text-ink'
-                          }`}
-                        >
-                          {isPlaying ? (
-                            <>
-                              <Pause className="w-3 h-3" /> Stop Preview
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-3 h-3" /> Listen Vibe
-                            </>
-                          )}
-                        </button>
-
+                      {/* Action button — Open Song only */}
+                      <div className="flex items-center justify-end pt-4 border-t border-ink/5 mt-4">
                         <button
                           onClick={() => handleOpenSong(song)}
                           className="font-mono text-[10px] uppercase tracking-widest flex items-center gap-1 py-1 px-3 bg-ink hover:bg-accent border border-ink hover:border-accent text-bg rounded-xs transition-colors cursor-pointer select-none font-bold shadow-sm"
                         >
-                          Open Song ✦
+                          Open Song
                         </button>
                       </div>
                     </motion.div>

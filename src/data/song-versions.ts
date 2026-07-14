@@ -151,7 +151,10 @@ export const DEFAULT_VERSIONS: SongVersion[] = [
   }
 ];
 
-export function getSongVersions(songIdOrTitle: string): SongVersion[] {
+export function getSongVersions(songIdOrTitle?: string): SongVersion[] {
+  if (!songIdOrTitle || typeof songIdOrTitle !== 'string') {
+    return DEFAULT_VERSIONS;
+  }
   const normKey = songIdOrTitle.toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
   
   for (const [key, versions] of Object.entries(SONG_VERSIONS_DATA)) {
