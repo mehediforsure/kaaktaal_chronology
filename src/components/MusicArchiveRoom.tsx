@@ -171,10 +171,9 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
                     onMouseLeave={() => setHoveredAlbum(null)}
                     onClick={() => handleSelect(album)}
                   >
-                    <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} gap-6 md:gap-10 items-center`}>
-                      
-                      {/* Cover Art */}
-                      <div className="w-full md:w-[45%] shrink-0">
+                    <div className={`flex ${isEven ? 'flex-row' : 'flex-row-reverse'} gap-4 md:gap-10 items-center`}>
+                                         {/* Cover Art */}
+                      <div className="w-[35%] md:w-[45%] shrink-0">
                         <div className="aspect-square relative border-2 border-ink bg-bg rounded-sm overflow-hidden shadow-[4px_4px_0px_rgba(17,17,19,0.15)] group-hover:shadow-[6px_6px_0px_rgba(211,26,26,0.2)] transition-shadow duration-500">
                           <img
                             src={getOptimizedImageUrl(album.cover_image, 600)}
@@ -188,52 +187,49 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
                       </div>
 
                       {/* Info Panel */}
-                      <div className={`w-full md:w-[55%] flex flex-col justify-center space-y-4 md:space-y-5 select-none ${isEven ? 'md:pl-2' : 'md:pr-2'} ${isEven ? 'md:text-left' : 'md:text-right'}`}>
+                      <div className={`w-[65%] md:w-[55%] flex flex-col justify-center space-y-2 md:space-y-5 select-none ${isEven ? 'pl-2' : 'pr-2'} ${isEven ? 'text-left' : 'text-right'}`}>
                         
                         {/* Index number — large typographic accent */}
-                        <span className={`font-plakatbau text-[64px] md:text-[96px] leading-none text-ink/[0.04] font-bold tracking-tighter ${isEven ? '' : 'md:self-end'}`}>
+                        <span className={`font-plakatbau text-[40px] md:text-[96px] leading-none text-ink/[0.04] font-bold tracking-tighter ${isEven ? '' : 'self-end'}`}>
                           {releaseNum}
                         </span>
 
-                        <div className="space-y-2 -mt-8 md:-mt-14 relative z-10">
+                        <div className="space-y-1 md:space-y-2 -mt-4 md:-mt-14 relative z-10">
                           {/* Release type label */}
-                          <div className={`flex items-center gap-2 ${isEven ? '' : 'md:justify-end'}`}>
-                            <span className="w-6 h-[2px] bg-accent inline-block" />
-                            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink/45 font-bold">
+                          <div className={`flex items-center gap-2 ${isEven ? '' : 'justify-end'}`}>
+                            <span className="w-4 md:w-6 h-[2px] bg-accent inline-block" />
+                            <span className="font-mono text-[8px] md:text-[9px] uppercase tracking-[0.2em] text-ink/45 font-bold">
                               {album.year} Release
                             </span>
                           </div>
 
                           {/* Title */}
-                          <h4 className="font-syne text-2xl md:text-3xl font-extrabold uppercase tracking-tight text-ink leading-[1.1] group-hover:text-accent transition-colors duration-300">
+                          <h4 className="font-syne text-sm md:text-3xl font-extrabold uppercase tracking-tight text-ink leading-[1.1] group-hover:text-accent transition-colors duration-300">
                             {album.title}
                           </h4>
 
                           {/* Short description */}
                           {album.description_short && (
-                            <p className={`font-sans text-sm text-ink/55 leading-relaxed max-w-md ${isEven ? '' : 'md:ml-auto'}`}>
-                              {album.description_short.length > 120 
-                                ? album.description_short.slice(0, 120) + '…' 
-                                : album.description_short}
+                            <p className={`font-sans text-[10px] md:text-sm text-ink/55 leading-relaxed max-w-md ${isEven ? '' : 'ml-auto'} line-clamp-2 md:line-clamp-none`}>
+                              {album.description_short}
                             </p>
                           )}
 
                           {/* Release date + track count */}
-                          <div className={`flex items-center gap-3 pt-1 ${isEven ? '' : 'md:justify-end'}`}>
-                            <span className="font-mono text-[10px] uppercase tracking-widest text-ink/40 font-bold">
+                          <div className={`flex flex-wrap items-center gap-1.5 md:gap-3 pt-1 ${isEven ? '' : 'justify-end'}`}>
+                            <span className="font-mono text-[8px] md:text-[10px] uppercase tracking-widest text-ink/40 font-bold">
                               {album.release_date
                                 ? new Date(album.release_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
                                 : album.year}
                             </span>
                             <span className="w-1 h-1 bg-ink/25 rounded-full" />
-                            <span className="font-mono text-[10px] uppercase tracking-widest text-ink/40 font-bold">
+                            <span className="font-mono text-[8px] md:text-[10px] uppercase tracking-widest text-ink/40 font-bold">
                               {album.tracks?.length || '—'} Tracks
                             </span>
-                          </div>
                         </div>
                       </div>
-
                     </div>
+                  </div>
                   </motion.div>
                 );
               })}

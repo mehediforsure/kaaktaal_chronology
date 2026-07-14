@@ -30,10 +30,16 @@ async function handleGenerate(req: Request) {
 
 
     // Send Telegram Notification (must be awaited in serverless context)
-    const telegramMsg = `🌧️ <b>Kaaktaal Journal Draft Ready for Review</b>\n\n<b>Title:</b> ${draft.title}\n\n<b>Content:</b>\n<i>"${draft.content}"</i>\n\n👉 <a href="${adminUrl}">Tap here to Review & Publish</a>`;
+    const telegramMsg = `🌧️ <b>Kaaktaal Journal Draft Ready for Review</b>\n\n<b>Title:</b> ${draft.title}\n\n<b>Content:</b>\n<i>"${draft.content}"</i>`;
+
+    const replyMarkup = {
+      inline_keyboard: [
+        [{ text: "📝 Review & Publish", url: adminUrl }]
+      ]
+    };
     
     try {
-      await sendTelegramMessage(telegramMsg, "HTML");
+      await sendTelegramMessage(telegramMsg, "HTML", replyMarkup);
       console.log("[Admin Journal] Telegram notification sent successfully.");
     } catch (err) {
       console.error("[Admin Journal] Error triggering Telegram notification:", err);
