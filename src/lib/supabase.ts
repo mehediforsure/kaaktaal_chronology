@@ -100,6 +100,7 @@ export async function fetchSongsForAlbum(releaseId: string, albumTitle?: string)
 
 /**
  * Fetch lyrics from Supabase table 'lyrics_bank' matching the given song_id.
+ * Also checks 'unreleased_tracks' if not found in 'lyrics_bank'.
  */
 export async function fetchLyricsForSong(songId: string): Promise<any | null> {
   try {
@@ -108,21 +109,64 @@ export async function fetchLyricsForSong(songId: string): Promise<any | null> {
       .select('*')
       .ilike('song_id', `%${songId}%`);
     
-    if (error || !data || data.length === 0) {
-      if (error) console.warn('Supabase lyrics fetch warning:', error.message);
-      return null;
+    if (!error && data && data.length > 0) {
+      const target = songId.toUpperCase().trim();
+      const matched = data.find(item => {
+        if (!item.song_id) return false;
+        const ids = item.song_id.toUpperCase().split(',').map((s: string) => s.trim());
+        return ids.includes(target);
+      });
+      if (matched) return matched;
     }
     
-    const target = songId.toUpperCase().trim();
-    const matched = data.find(item => {
-      if (!item.song_id) return false;
-      const ids = item.song_id.toUpperCase().split(',').map((s: string) => s.trim());
-      return ids.includes(target);
-    });
-    
-    return matched || null;
+    // Check unreleased_tracks table as fallback
+    const { data: unreleased, error: unreleasedErr } = await supabase
+      .from('unreleased_tracks')
+      .select('*')
+      .ilike('song_id', `%${songId}%`);
+
+    if (!unreleasedErr && unreleased && unreleased.length > 0) {
+      const target = songId.toUpperCase().trim();
+      const matched = unreleased.find(item => item.song_id && item.song_id.toUpperCase().trim() === target);
+      return matched || unreleased[0];
+    }
+
+    return null;
   } catch (err) {
     console.error('Failed to fetch lyrics from Supabase:', err);
     return null;
+  }
+}
+
+export interface UnreleasedTrack {
+  id: number;
+  index?: number;
+  song_id: string;
+  title_en: string;
+  title_bn?: string | null;
+  lyrics: string;
+  status?: string | null;
+  youtube_url?: string;
+  spotify_url?: string;
+}
+
+/**
+ * Fetch all unreleased tracks from Supabase table 'unreleased_tracks'.
+ */
+export async function fetchUnreleasedTracks(): Promise<UnreleasedTrack[]> {
+  try {
+    const { data, error } = await supabase
+      .from('unreleased_tracks')
+      .select('*')
+      .order('id', { ascending: true });
+    
+    if (error || !data) {
+      if (error) console.warn('Supabase unreleased_tracks fetch warning:', error.message);
+      return [];
+    }
+    return data as UnreleasedTrack[];
+  } catch (err) {
+    console.error('Failed to fetch unreleased_tracks from Supabase:', err);
+    return [];
   }
 }

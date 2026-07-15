@@ -1,4 +1,6 @@
-"use client";
+import os
+
+content = """\"\"\"use client\"\"\";
 
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -168,7 +170,7 @@ const INITIAL_NODES: MapNode[] = [
     songsCount: 12,
     storiesCount: 14,
     journalsCount: 9,
-    connectedItems: ['Song: Writer\'s Block', 'Journal: The Hum of Damp Condenser Mics'],
+    connectedItems: ['Song: Writer\\'s Block', 'Journal: The Hum of Damp Condenser Mics'],
     relatedPlaceIds: []
   },
   {
@@ -200,66 +202,6 @@ const INITIAL_NODES: MapNode[] = [
     journalsCount: 11,
     connectedItems: ['Song: Gopon Kotha', 'Journal: Damp Cables and Monsoon Static'],
     relatedPlaceIds: ['stall']
-  },
-  {
-    id: 'sylhet',
-    name: 'Sylhet',
-    poeticSubtitle: 'Where tea leaves catch the monsoon.',
-    poeticIntro: 'Rolling hills wrapped in mist. The damp acoustic resonance of a wooden cabin while the rain hammers the tin roof.',
-    type: 'real',
-    x: 950,
-    y: -100,
-    color: ARCHIVAL_COLORS.fadedMoss,
-    songsCount: 3,
-    storiesCount: 5,
-    journalsCount: 2,
-    connectedItems: ['Journal: Monsoon over Surma'],
-    relatedPlaceIds: ['rain', 'rooftop']
-  },
-  {
-    id: 'rajshahi',
-    name: 'Rajshahi',
-    poeticSubtitle: 'Dust settling on the Padma.',
-    poeticIntro: 'The scorching afternoon sun reflecting off the wide, quiet river. Songs played under the shade of ancient mango trees.',
-    type: 'real',
-    x: -200,
-    y: 0,
-    color: ARCHIVAL_COLORS.warmBark,
-    songsCount: 2,
-    storiesCount: 4,
-    journalsCount: 1,
-    connectedItems: ['Journal: Heat Haze Chords'],
-    relatedPlaceIds: ['tree', 'stall']
-  },
-  {
-    id: 'khulna',
-    name: 'Khulna',
-    poeticSubtitle: 'Saltwater and rusted shipyards.',
-    poeticIntro: 'The heavy, humid air carrying the metallic clatter of the port. Melodies born at the edge of the mangrove forest.',
-    type: 'real',
-    x: -150,
-    y: 900,
-    color: ARCHIVAL_COLORS.deepNavy,
-    songsCount: 4,
-    storiesCount: 3,
-    journalsCount: 4,
-    connectedItems: ['Journal: Tide Markers'],
-    relatedPlaceIds: ['jail', 'memory-room']
-  },
-  {
-    id: 'chattogram',
-    name: 'Chattogram',
-    poeticSubtitle: 'The city sloping into the sea.',
-    poeticIntro: 'Winding hilly roads leading down to the chaotic shipyards. Tapes recording the distant foghorns over the bay.',
-    type: 'real',
-    x: 600,
-    y: 1000,
-    color: ARCHIVAL_COLORS.charcoal2,
-    songsCount: 6,
-    storiesCount: 7,
-    journalsCount: 5,
-    connectedItems: ['Journal: Foghorn Resonances'],
-    relatedPlaceIds: ['window', 'rain']
   }
 ];
 
@@ -339,6 +281,9 @@ export default function MapRoom({ onBack }: MapRoomProps) {
 
   // Generate Voronoi
   const delaunay = useMemo(() => {
+    // We map all nodes, even if filtered out, to keep the territory shapes stable.
+    // We'll just hide the text for filtered ones if needed, or filter affects nothing.
+    // For a stable map, Voronoi is built on ALL nodes.
     return Delaunay.from(mapNodes.map(n => [n.x, n.y]));
   }, [mapNodes]);
 
@@ -419,15 +364,15 @@ export default function MapRoom({ onBack }: MapRoomProps) {
     const name = parts[1] || parts[0];
 
     if (type === 'Song') {
-      const normName = name.toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
+      const normName = name.toLowerCase().trim().replace(/[\\s\\(\\)\\-\\.]/g, '');
       const matchOfficial = liveOfficialSongs.find(s => {
-        const t = (s.title_en || s.song_id || '').toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
+        const t = (s.title_en || s.song_id || '').toLowerCase().trim().replace(/[\\s\\(\\)\\-\\.]/g, '');
         return t.includes(normName) || normName.includes(t);
       });
       if (matchOfficial) return setSelectedSongForModal(matchOfficial);
 
       const matchUnreleased = liveUnreleasedSongs.find(s => {
-        const t = (s.title_en || s.song_id || '').toLowerCase().trim().replace(/[\s\(\)\-\.]/g, '');
+        const t = (s.title_en || s.song_id || '').toLowerCase().trim().replace(/[\\s\\(\\)\\-\\.]/g, '');
         return t.includes(normName) || normName.includes(t);
       });
       if (matchUnreleased) {
@@ -438,7 +383,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
         });
       }
       return setSelectedSongForModal({
-        song_id: name.toLowerCase().replace(/[\s\(\)\-\.]/g, '-'), title_en: name,
+        song_id: name.toLowerCase().replace(/[\\s\\(\\)\\-\\.]/g, '-'), title_en: name,
         album: `Archive Map Location: ${nodeName}`, status: 'Archived Track'
       });
     }
@@ -469,7 +414,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
           <motion.div
             initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}
             onMouseEnter={() => setIsHoveringControls(true)} onMouseLeave={() => setIsHoveringControls(false)}
-            className="absolute top-4 left-4 z-20 max-w-sm bg-black/70 backdrop-blur-md p-4 border border-white/5 rounded-xs map-control-ui pointer-events-auto shadow-2xl"
+            className="absolute top-4 left-4 z-20 max-w-sm bg-black/70 backdrop-blur-md p-4 border border-white/5 rounded-xs map-control-ui pointer-events-auto"
           >
             <h2 className="font-syne text-sm font-extrabold uppercase tracking-widest text-[#EAE8DE] flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-[#EAE8DE] animate-pulse" />
@@ -500,9 +445,9 @@ export default function MapRoom({ onBack }: MapRoomProps) {
           >
             <button
               onClick={onBack}
-              className="py-2.5 px-5 bg-[#27272A] hover:bg-[#3F3F46] text-[#E4E4E7] hover:text-white border-y border-l border-[#52525B]/60 rounded-l-full rounded-r-none font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all cursor-pointer shadow-2xl flex items-center gap-2 font-bold group"
+              className="py-2.5 px-5 bg-[#1C1C1E] hover:bg-[#2C2C2E] text-[#D4CFC9] hover:text-white border-y border-l border-[#333] rounded-l-full rounded-r-none font-mono text-[10px] uppercase tracking-widest transition-all cursor-pointer shadow-xl flex items-center gap-2 font-bold"
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-[#A1A1AA] group-hover:text-white transition-transform group-hover:-translate-x-0.5" />
+              <ArrowLeft className="w-3.5 h-3.5" />
               <span>Return to Archive</span>
             </button>
           </motion.div>
@@ -632,9 +577,9 @@ export default function MapRoom({ onBack }: MapRoomProps) {
             initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }}
             className="absolute bottom-4 left-4 z-20 flex flex-col gap-2 map-control-ui pointer-events-auto"
           >
-            <button onClick={() => setZoom(prev => Math.min(prev + 0.15, 2.5))} className="w-8 h-8 rounded-full border border-white/10 bg-black/70 text-white flex items-center justify-center shadow-md cursor-pointer hover:bg-white/10">＋</button>
-            <button onClick={() => setZoom(prev => Math.max(prev - 0.15, 0.4))} className="w-8 h-8 rounded-full border border-white/10 bg-black/70 text-white flex items-center justify-center shadow-md cursor-pointer hover:bg-white/10">－</button>
-            <button onClick={resetView} className="w-8 h-8 rounded-full border border-white/10 bg-black/70 text-white flex items-center justify-center text-xs shadow-md cursor-pointer hover:bg-white/10">⌖</button>
+            <button onClick={() => setZoom(prev => Math.min(prev + 0.15, 2.5))} className="w-8 h-8 rounded-full border border-white/10 bg-black/70 text-white flex items-center justify-center shadow-md">＋</button>
+            <button onClick={() => setZoom(prev => Math.max(prev - 0.15, 0.4))} className="w-8 h-8 rounded-full border border-white/10 bg-black/70 text-white flex items-center justify-center shadow-md">－</button>
+            <button onClick={resetView} className="w-8 h-8 rounded-full border border-white/10 bg-black/70 text-white flex items-center justify-center text-xs shadow-md">⌖</button>
           </motion.div>
         )}
       </AnimatePresence>
@@ -644,24 +589,24 @@ export default function MapRoom({ onBack }: MapRoomProps) {
         {activeNode && (
           <>
             <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 0.3 }} exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} exit={{ opacity: 0 }}
               onClick={() => setActiveNode(null)}
               className="absolute inset-0 bg-black z-20 cursor-pointer pointer-events-auto"
             />
             <motion.div
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 200 }}
-              className="absolute right-0 top-0 h-full w-[320px] sm:w-[420px] bg-[#141414] border-l border-white/10 z-30 p-8 flex flex-col justify-between shadow-2xl pointer-events-auto map-control-ui overflow-y-auto select-text"
-              style={{ backgroundImage: `linear-gradient(to bottom, transparent, rgba(0,0,0,0.7))` }}
+              className="absolute right-0 top-0 h-full w-[320px] sm:w-[420px] bg-[#161616] border-l border-white/5 z-30 p-8 flex flex-col justify-between shadow-2xl pointer-events-auto map-control-ui overflow-y-auto"
+              style={{ backgroundImage: `linear-gradient(to bottom, transparent, rgba(0,0,0,0.5))` }}
             >
               <div className="space-y-8">
                 {/* Header */}
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-white/40">
+                    <span className="font-mono text-[9px] uppercase tracking-widest text-white/30">
                       Territory Record // {activeNode.id.toUpperCase()}
                     </span>
-                    <button onClick={() => setActiveNode(null)} className="text-white/40 hover:text-white transition-colors cursor-pointer">
+                    <button onClick={() => setActiveNode(null)} className="text-white/30 hover:text-white transition-colors">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
@@ -669,13 +614,13 @@ export default function MapRoom({ onBack }: MapRoomProps) {
                     {activeNode.name}
                   </h3>
                   <div className="h-[1px] w-12 bg-white/20" />
-                  <p className="font-serif text-[15px] text-[#EAE8DE]/80 leading-relaxed italic border-l border-white/20 pl-4 py-1">
+                  <p className="font-serif text-sm text-[#EAE8DE]/80 leading-relaxed italic">
                     "{activeNode.poeticIntro}"
                   </p>
                 </div>
 
                 {/* Found Here */}
-                <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="space-y-4 pt-4 border-t border-white/5">
                   <h4 className="font-mono text-[10px] uppercase tracking-widest text-white/50">Found here</h4>
                   <ul className="space-y-2">
                     {activeNode.connectedItems.map((item, idx) => {
@@ -685,13 +630,13 @@ export default function MapRoom({ onBack }: MapRoomProps) {
                       return (
                         <li 
                           key={idx} onClick={() => handleOpenConnectedItem(item, activeNode.name)}
-                          className="group flex items-center gap-3 p-3 rounded-sm bg-black/40 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all cursor-pointer"
+                          className="group flex items-center gap-3 p-3 rounded-sm bg-black/20 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all cursor-pointer"
                         >
-                          {itemType === 'Song' && <Music className="w-3.5 h-3.5 text-[#E0533C]/80 group-hover:text-[#E0533C]" />}
-                          {itemType === 'Journal' && <FileText className="w-3.5 h-3.5 text-[#CD9A62]/80 group-hover:text-[#CD9A62]" />}
-                          {itemType !== 'Song' && itemType !== 'Journal' && <Sparkles className="w-3.5 h-3.5 text-[#A19E92]/80 group-hover:text-[#A19E92]" />}
+                          {itemType === 'Song' && <Music className="w-3.5 h-3.5 text-white/40 group-hover:text-[#EAE8DE]" />}
+                          {itemType === 'Journal' && <FileText className="w-3.5 h-3.5 text-white/40 group-hover:text-[#EAE8DE]" />}
+                          {itemType !== 'Song' && itemType !== 'Journal' && <Sparkles className="w-3.5 h-3.5 text-white/40 group-hover:text-[#EAE8DE]" />}
                           
-                          <span className="font-sans text-[12px] text-white/70 group-hover:text-[#FAF9F6] transition-colors">
+                          <span className="font-sans text-[12px] text-white/70 group-hover:text-white transition-colors">
                             {itemName}
                           </span>
                         </li>
@@ -702,7 +647,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
 
                 {/* Continue To (Relationships) */}
                 {activeNode.relatedPlaceIds.length > 0 && (
-                  <div className="space-y-4 pt-4 border-t border-white/10">
+                  <div className="space-y-4 pt-4 border-t border-white/5">
                     <h4 className="font-mono text-[10px] uppercase tracking-widest text-white/50">Continue to</h4>
                     <div className="flex flex-col gap-2">
                       {activeNode.relatedPlaceIds.map(targetId => {
@@ -712,13 +657,13 @@ export default function MapRoom({ onBack }: MapRoomProps) {
                           <button
                             key={targetId}
                             onClick={() => centerNodeView(targetNode)}
-                            className="flex items-center justify-between p-3 rounded-sm bg-black/40 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all text-left group cursor-pointer"
+                            className="flex items-center justify-between p-3 rounded-sm bg-black/20 hover:bg-white/5 border border-transparent hover:border-white/10 transition-all text-left group"
                           >
                             <div>
-                              <span className="block font-syne text-sm uppercase tracking-wider text-white/80 group-hover:text-[#FAF9F6]">{targetNode.name}</span>
-                              <span className="block font-serif text-[10px] italic text-white/40 group-hover:text-white/60">{targetNode.poeticSubtitle}</span>
+                              <span className="block font-syne text-sm uppercase tracking-wider text-white/80 group-hover:text-white">{targetNode.name}</span>
+                              <span className="block font-serif text-[10px] italic text-white/40">{targetNode.poeticSubtitle}</span>
                             </div>
-                            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-[#FAF9F6] transition-transform group-hover:translate-x-1" />
+                            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-white/60 transition-transform group-hover:translate-x-1" />
                           </button>
                         );
                       })}
@@ -731,12 +676,12 @@ export default function MapRoom({ onBack }: MapRoomProps) {
         )}
       </AnimatePresence>
 
-      {/* Deep-Linked Modals */}
+      {/* Deep-Linked Modals... (Keeping them exactly the same structural logic, styled darkly) */}
       <AnimatePresence>
         {selectedSongForModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
             <div className="w-full max-w-4xl relative">
-               <button onClick={() => setSelectedSongForModal(null)} className="absolute -top-10 right-0 text-white/50 hover:text-white font-mono text-xs uppercase z-50 cursor-pointer">Close ×</button>
+               <button onClick={() => setSelectedSongForModal(null)} className="absolute -top-10 right-0 text-white/50 hover:text-white font-mono text-xs uppercase z-50">Close ×</button>
                <SongPage {...selectedSongForModal} onClose={() => setSelectedSongForModal(null)} />
             </div>
           </motion.div>
@@ -744,7 +689,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
         {selectedJournalForModal && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-[#121212] border border-white/10 p-8 max-w-xl w-full relative">
-              <button onClick={() => setSelectedJournalForModal(null)} className="absolute top-4 right-4 text-white/50 hover:text-white font-mono text-xs uppercase cursor-pointer">Close ×</button>
+              <button onClick={() => setSelectedJournalForModal(null)} className="absolute top-4 right-4 text-white/50 hover:text-white font-mono text-xs uppercase">Close ×</button>
               <h3 className="font-syne text-2xl uppercase tracking-tight text-[#FAF9F6] border-b border-white/10 pb-4 mb-4">{selectedJournalForModal.title}</h3>
               <p className="font-garamond text-lg text-white/80 leading-relaxed italic whitespace-pre-wrap">{selectedJournalForModal.content}</p>
             </motion.div>
@@ -753,7 +698,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
         {archivedDetail.isOpen && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4">
             <motion.div initial={{ scale: 0.95 }} animate={{ scale: 1 }} exit={{ scale: 0.95 }} className="bg-[#121212] border border-white/10 p-8 max-w-lg w-full relative">
-              <button onClick={() => setArchivedDetail({ isOpen: false, nodeName: '', item: null })} className="absolute top-4 right-4 text-white/50 hover:text-white font-mono text-xs uppercase cursor-pointer">Close ×</button>
+              <button onClick={() => setArchivedDetail({ isOpen: false, nodeName: '', item: null })} className="absolute top-4 right-4 text-white/50 hover:text-white font-mono text-xs uppercase">Close ×</button>
               <h3 className="font-syne text-2xl uppercase text-[#FAF9F6] border-b border-white/10 pb-4 mb-4">{archivedDetail.nodeName}</h3>
               <p className="font-sans text-sm text-white/70">Archival recovery for {archivedDetail.item || 'full catalog'} is logged.</p>
             </motion.div>
@@ -764,3 +709,8 @@ export default function MapRoom({ onBack }: MapRoomProps) {
     </div>
   );
 }
+"""
+
+with open("src/components/MapRoom.tsx", "w", encoding="utf-8") as f:
+    f.write(content)
+print("Built new MapRoom.tsx")
