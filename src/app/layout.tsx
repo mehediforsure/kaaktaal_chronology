@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Analytics } from '@vercel/analytics/next';
 import Providers from './providers';
+import MotionProvider from '../components/MotionProvider';
 import '../index.css';
 
 export const metadata: Metadata = {
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>{children}</Providers>
+        <MotionProvider>
+          <Providers>{children}</Providers>
+        </MotionProvider>
         <Analytics />
       </body>
     </html>

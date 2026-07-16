@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { m, AnimatePresence } from 'motion/react';
 import { HelpCircle, Music, Map, Compass, Menu, X } from 'lucide-react';
 import MusicArchiveRoom from './MusicArchiveRoom';
-import MapRoom from './MapRoom';
 import FewAndFarBetween from './FewAndFarBetween';
 import useEngagement from '../hooks/useEngagement';
 import { FinderTab } from '../types';
+import dynamic from 'next/dynamic';
+
+const MapRoom = dynamic(() => import('./MapRoom'), { ssr: false });
 
 interface FinderPrompt {
   id: string;
@@ -125,7 +127,7 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
       <div className={isMap ? "w-full h-full flex flex-col flex-1 pt-0" : "transition-all duration-300 pt-2 w-full min-w-full"}>
         <AnimatePresence mode="wait">
           {activeTab === 'seek' && (
-            <motion.div
+            <m.div
               key="seek-tab"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -164,7 +166,7 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
                       {/* Expandable Content Area */}
                       <AnimatePresence initial={false}>
                         {isOpen && (
-                          <motion.div
+                          <m.div
                             initial={{ height: 0, opacity: 0, marginTop: 0 }}
                             animate={{ height: "auto", opacity: 1, marginTop: 12 }}
                             exit={{ height: 0, opacity: 0, marginTop: 0 }}
@@ -174,18 +176,18 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
                             <div className="flex flex-col items-start sm:items-center justify-start sm:justify-center text-left sm:text-center py-5 px-6 border-2 border-ink bg-[#faf8f5] shadow-[3px_3px_0px_rgba(17,17,19,0.15)] rounded-sm w-full">
                               {item.response}
                             </div>
-                          </motion.div>
+                          </m.div>
                         )}
                       </AnimatePresence>
                     </div>
                   );
                 })}
               </div>
-            </motion.div>
+            </m.div>
           )}
 
           {activeTab === 'music' && (
-            <motion.div
+            <m.div
               key="music-tab"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -193,11 +195,11 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
               transition={{ duration: 0.5 }}
             >
               <MusicArchiveRoom />
-            </motion.div>
+            </m.div>
           )}
 
           {activeTab === 'map' && (
-            <motion.div
+            <m.div
               key="map-tab"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -208,11 +210,11 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
               <div className="w-full h-full min-h-0 overflow-hidden bg-[#0E0E0E]">
                 <MapRoom onBack={onBack} />
               </div>
-            </motion.div>
+            </m.div>
           )}
 
           {activeTab === 'few-far' && (
-            <motion.div
+            <m.div
               key="few-far-tab"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -220,7 +222,7 @@ export default function FinderRoom({ activeTab, onBack }: FinderRoomProps) {
               transition={{ duration: 0.5 }}
             >
               <FewAndFarBetween />
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>

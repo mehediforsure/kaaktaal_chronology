@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { ALBUMS } from '../data';
 import { Album, Song } from '../types';
 import useEngagement from '../hooks/useEngagement';
 import SongPage from './SongPage';
@@ -14,7 +13,8 @@ interface MusicArchiveRoomProps {
 
 export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProps) {
   const { logAction } = useEngagement();
-  const [albumsList, setAlbumsList] = useState<Album[]>(ALBUMS);
+  const [albumsList, setAlbumsList] = useState<Album[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [hoveredAlbum, setHoveredAlbum] = useState<Album | null>(null);
   const [selectedAlbum, setSelectedAlbum] = useState<Album | null>(null);
   const [selectedSongTrack, setSelectedSongTrack] = useState<string | null>(null);
@@ -23,10 +23,12 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
 
   useEffect(() => {
     async function loadLiveReleases() {
+      setIsLoading(true);
       const liveData = await fetchReleases();
       if (liveData && liveData.length > 0) {
         setAlbumsList(liveData);
       }
+      setIsLoading(false);
     }
     loadLiveReleases();
   }, []);
@@ -143,7 +145,14 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
             transition={{ duration: 0.8 }}
             className="max-w-6xl mx-auto px-6 pt-12 md:pt-16 space-y-16"
           >
-            {/* Header */}
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+                <div className="w-8 h-8 rounded-full border-2 border-ink/20 border-t-accent animate-spin" />
+                <p className="font-mono text-xs uppercase tracking-widest text-ink/40">Loading Archive...</p>
+              </div>
+            ) : (
+              <>
+                {/* Header */}
             <div className="border-b-2 border-ink pb-8 flex flex-col md:flex-row justify-between items-baseline gap-4 select-none">
               <div>
                 <h3 className="font-syne text-3xl font-extrabold uppercase tracking-tighter text-ink mt-2">
@@ -234,6 +243,8 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
                 );
               })}
             </div>
+            </>
+          )}
 
 
           </motion.div>

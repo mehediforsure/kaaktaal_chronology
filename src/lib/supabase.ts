@@ -1,6 +1,5 @@
 import { createClient } from '@supabase/supabase-js';
 import { Album, Song } from '../types';
-import { ALBUMS } from '../data';
 
 export const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,12 +18,12 @@ export async function fetchReleases(): Promise<Album[]> {
     
     if (error || !data || data.length === 0) {
       if (error) console.warn('Supabase releases fetch warning:', error.message);
-      return ALBUMS;
+      return [];
     }
     return data as Album[];
   } catch (err) {
     console.error('Failed to fetch releases from Supabase:', err);
-    return ALBUMS;
+    return [];
   }
 }
 

@@ -6,7 +6,7 @@ export const ALBUMS: Album[] = [
     title: 'Na Koite Pari - Na Shoite Pari',
     release_date: '2025-10-12',
     year: '2025',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Na%20Koite%20Pari%20-%20Na%20Shoite%20Pari.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/3NaKoitePariExample',
     description_short: 'A study on silent grief, lingering echoes, and things left unuttered. Recorded over seven sleepless autumn nights on a single cassette recorder in a quiet Dhaka suburb.',
     tracks: [
@@ -24,7 +24,7 @@ export const ALBUMS: Album[] = [
     title: 'Dinkal Ajkal',
     release_date: '2024-04-04',
     year: '2024',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Dinkal%20Ajkal.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/4DinkalAjkalExample',
     description_short: 'An observation of changing times, disappearing landmarks, and the heavy passage of youth. Musically expansive, integrating traditional instruments with weathered electronic drone.',
     tracks: [
@@ -42,7 +42,7 @@ export const ALBUMS: Album[] = [
     title: 'Karagarer Gaan',
     release_date: '2023-01-19',
     year: '2023',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Karagarer%20Gaan.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/5KaragarerGaanExample',
     description_short: 'Literally translating to "Songs from Prison", this release gathers historical resistance songs, poems of captivity, and acoustic re-interpretations of freedom ballads.',
     tracks: [
@@ -60,7 +60,7 @@ export const ALBUMS: Album[] = [
     title: 'Kaaktaal Raw Volume 01',
     release_date: '2021-07-15',
     year: '2021',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2001.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/1RawVol1Example',
     description_short: 'The foundation. Extremely raw four-track tapes, ambient apartment noise, and half-remembered melodies hummed while walking in the rain.',
     tracks: [
@@ -77,7 +77,7 @@ export const ALBUMS: Album[] = [
     title: 'Kaaktaal Raw Volume 02',
     release_date: '2021-09-22',
     year: '2021',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Kaaktaal%20Raw%20Volume%2002.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/2RawVol2Example',
     description_short: 'Continuing the archival process. Features sparse nylon string guitars and early diary entries spoken over slow instrumental loops.',
     tracks: [
@@ -94,7 +94,7 @@ export const ALBUMS: Album[] = [
     title: 'Kaaktaal Raw Volume 03',
     release_date: '2022-11-08',
     year: '2022',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2003.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/3RawVol3Example',
     description_short: 'Deepening into folk-minimalism. Sparse arrangements focusing heavily on the lyricism of the soil, water, and shifting skylines.',
     tracks: [
@@ -111,7 +111,7 @@ export const ALBUMS: Album[] = [
     title: 'Kaaktaal Raw, Vol. 4 (Version 01)',
     release_date: '2022-02-03',
     year: '2022',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%2C%20Vol.%204%20(Version%2001).jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/4RawVol4Example',
     description_short: 'An experimental divergence. Focuses on physical space, containing recordings made in abandoned railway stations and empty corridors.',
     tracks: [
@@ -128,7 +128,7 @@ export const ALBUMS: Album[] = [
     title: 'Kaaktaal Raw Volume 05',
     release_date: '2023-08-14',
     year: '2023',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2005.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/5RawVol5Example',
     description_short: 'Written during a period of prolonged isolation. A quiet collection of lullabies for restless minds and people who cannot sleep.',
     tracks: [
@@ -145,7 +145,7 @@ export const ALBUMS: Album[] = [
     title: 'Kaaktaal Raw Volume 06',
     release_date: '2024-12-28',
     year: '2024',
-    cover_image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_KaaktaalRaw%20Volume%2006.jpg',
+    cover_image: '',
     spotify_url: 'https://open.spotify.com/album/6RawVol6Example',
     description_short: 'The latest chapter of raw documentation. Reflective, deeply melodic, and embracing the cracks and hiss of imperfect tape machinery.',
     tracks: [
@@ -302,7 +302,7 @@ export const CROW_ACCIDENTS: CrowAccident[] = [
     title: 'Na Shoite Pari',
     content: 'A study on silent grief, lingering echoes, and things left unuttered. Recorded over seven sleepless autumn nights on a single cassette recorder in a quiet Dhaka suburb.',
     subtext: 'Album: Na Koite Pari - Na Shoite Pari (2025)',
-    image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Na%20Koite%20Pari%20-%20Na%20Shoite%20Pari.jpg',
+    image: '',
     metadata: 'Fidelity: 128kbps Cassette Rip // Key: Drop D'
   },
   {
@@ -328,7 +328,7 @@ export const CROW_ACCIDENTS: CrowAccident[] = [
     title: 'Karagarer Gaan Block Print',
     content: 'The original hand-carved woodblock print created for the Karagarer Gaan sleeve. It depicts the heavy iron doors of a historical prison, softened by overgrown creepers.',
     subtext: 'Artwork by Kaaktaal Archive',
-    image: 'https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/Cover_Karagarer%20Gaan.jpg',
+    image: '',
     metadata: 'Medium: Indigo Block Ink on Hand-made Jute Paper'
   },
   {

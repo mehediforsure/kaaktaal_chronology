@@ -285,6 +285,12 @@ export default function MapRoom({ onBack }: MapRoomProps) {
   const [hoveredNode, setHoveredNode] = useState<MapNode | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>('');
 
+  // Pinch-to-zoom & Click stability refs
+  const [initialPinchDistance, setInitialPinchDistance] = useState<number | null>(null);
+  const [initialPinchZoom, setInitialPinchZoom] = useState<number>(1);
+  const dragDistance = useRef(0);
+  const startPos = useRef({ x: 0, y: 0 });
+
   // Live Supabase Data State
   const [liveOfficialSongs, setLiveOfficialSongs] = useState<Song[]>([]);
   const [liveUnreleasedSongs, setLiveUnreleasedSongs] = useState<UnreleasedTrack[]>([]);
@@ -377,30 +383,66 @@ export default function MapRoom({ onBack }: MapRoomProps) {
   const handleMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest('.map-control-ui')) return;
     setIsDragging(true);
+    dragDistance.current = 0;
+    startPos.current = { x: e.clientX, y: e.clientY };
     setDragStart({ x: e.clientX - pan.x, y: e.clientY - pan.y });
   };
 
   const handleMouseMove = (e: React.MouseEvent) => {
     if (!isDragging) return;
+    dragDistance.current = Math.hypot(e.clientX - startPos.current.x, e.clientY - startPos.current.y);
     setPan({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
   };
 
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    setInitialPinchDistance(null);
+  };
 
   const handleTouchStart = (e: React.TouchEvent) => {
     if ((e.target as HTMLElement).closest('.map-control-ui')) return;
-    setIsDragging(true);
-    const touch = e.touches[0];
-    setDragStart({ x: touch.clientX - pan.x, y: touch.clientY - pan.y });
+    
+    if (e.touches.length === 2) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      setInitialPinchDistance(dist);
+      setInitialPinchZoom(zoom);
+      setIsDragging(false);
+      return;
+    }
+
+    if (e.touches.length === 1) {
+      setIsDragging(true);
+      dragDistance.current = 0;
+      const touch = e.touches[0];
+      startPos.current = { x: touch.clientX, y: touch.clientY };
+      setDragStart({ x: touch.clientX - pan.x, y: touch.clientY - pan.y });
+    }
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
+    if (e.touches.length === 2 && initialPinchDistance !== null) {
+      const dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      const scale = dist / initialPinchDistance;
+      let nextZoom = initialPinchZoom * scale;
+      nextZoom = Math.max(0.4, Math.min(nextZoom, 2.5));
+      setZoom(nextZoom);
+      return;
+    }
+
+    if (!isDragging || e.touches.length !== 1) return;
     const touch = e.touches[0];
+    dragDistance.current = Math.hypot(touch.clientX - startPos.current.x, touch.clientY - startPos.current.y);
     setPan({ x: touch.clientX - dragStart.x, y: touch.clientY - dragStart.y });
   };
 
   const handleWheel = (e: React.WheelEvent) => {
+    if ((e.target as HTMLElement).closest('.map-control-ui')) return;
     e.preventDefault();
     const zoomIntensity = 0.05;
     const nextZoom = e.deltaY < 0 ? Math.min(zoom + zoomIntensity, 2.5) : Math.max(zoom - zoomIntensity, 0.4);
@@ -500,10 +542,10 @@ export default function MapRoom({ onBack }: MapRoomProps) {
           >
             <button
               onClick={onBack}
-              className="py-2.5 px-5 bg-[#27272A] hover:bg-[#3F3F46] text-[#E4E4E7] hover:text-white border-y border-l border-[#52525B]/60 rounded-l-full rounded-r-none font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all cursor-pointer shadow-2xl flex items-center gap-2 font-bold group"
+              className="py-2 sm:py-2.5 px-3 sm:px-5 bg-[#27272A] hover:bg-[#3F3F46] text-[#E4E4E7] hover:text-white border-y border-l border-[#52525B]/60 rounded-l-full rounded-r-none font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all cursor-pointer shadow-2xl flex items-center gap-1.5 sm:gap-2 font-bold group"
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-[#A1A1AA] group-hover:text-white transition-transform group-hover:-translate-x-0.5" />
-              <span>Return to Archive</span>
+              <ArrowLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A1A1AA] group-hover:text-white transition-transform group-hover:-translate-x-0.5" />
+              <span className="hidden sm:inline">Return to Archive</span>
             </button>
           </motion.div>
         )}
@@ -512,7 +554,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
       {/* 2. Interactive Map Canvas */}
       <div 
         ref={containerRef}
-        className={`w-full h-full relative cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
+        className={`w-full h-full relative cursor-grab touch-none ${isDragging ? 'cursor-grabbing' : ''}`}
         onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
         onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleMouseUp}
         onWheel={handleWheel}
@@ -545,7 +587,11 @@ export default function MapRoom({ onBack }: MapRoomProps) {
                   <motion.g 
                     key={node.id} 
                     className="pointer-events-auto cursor-pointer"
-                    onClick={(e) => { e.stopPropagation(); centerNodeView(node); }}
+                    onClick={(e) => { 
+                      e.stopPropagation(); 
+                      if (dragDistance.current > 5) return;
+                      centerNodeView(node); 
+                    }}
                     onMouseEnter={() => setHoveredNode(node)}
                     onMouseLeave={() => setHoveredNode(null)}
                   >
