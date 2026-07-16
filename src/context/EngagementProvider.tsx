@@ -17,6 +17,7 @@ const INITIAL_STATE: EngagementState = {
   journalInteractions: 0,
   finderUsage: 0,
   mapClicks: 0,
+  globalClicks: 0,
 };
 
 const EngagementContext = createContext<EngagementContextType | undefined>(undefined);
@@ -95,6 +96,10 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
           updated.mapClicks += 1;
           changed = true;
           break;
+        case 'global_click':
+          updated.globalClicks = (updated.globalClicks || 0) + 1;
+          changed = true;
+          break;
         default:
           break;
       }
@@ -102,6 +107,17 @@ export function EngagementProvider({ children }: { children: React.ReactNode }) 
       return changed ? updated : prev;
     });
   }, []);
+ 
+  // Track global clicks
+  useEffect(() => {
+    const handleGlobalClick = () => {
+      logAction('global_click');
+    };
+    document.addEventListener('click', handleGlobalClick);
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+    };
+  }, [logAction]);
  
   // Check if a specific hidden experience should unlock based on current engagement
   const isUnlocked = useCallback((experienceId: string): boolean => {

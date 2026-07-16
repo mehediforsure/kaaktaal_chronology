@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { supabase } from '../lib/supabase';
 
 interface MemoryRoomProps {
   isModal?: boolean;
@@ -11,20 +12,40 @@ interface MemoryRoomProps {
 
 export default function MemoryRoom({ isModal = false, onClose, isDarkTheme = false }: MemoryRoomProps) {
   const [name, setName] = useState('');
-  const [contact, setContact] = useState('');
+  const [whatsapp, setWhatsapp] = useState('');
+  const [email, setEmail] = useState('');
   const [city, setCity] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !contact) return;
+    if (!name || !whatsapp) return;
 
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      setSubmitted(true);
-    }, 1200);
+    
+    // Parse whatsapp to int-8 safely by stripping non-digits. 
+    // If empty after stripping, pass null so Supabase doesn't error on empty string.
+    const numericStr = whatsapp.replace(/\D/g, '');
+    const whatsappInt = numericStr ? parseInt(numericStr, 10) : null;
+
+    try {
+      const { error } = await supabase.from('Visitors').insert([{
+        name,
+        current_city: city,
+        whatsapp: whatsappInt,
+        email
+      }]);
+      
+      if (error) {
+        console.error("Supabase insert error (Visitors):", error);
+      }
+    } catch (err) {
+      console.error("Failed to insert visitor:", err);
+    }
+
+    setIsLoading(false);
+    setSubmitted(true);
   };
 
   const bgClass = isDarkTheme ? "bg-[#0e0202]/75 backdrop-blur-md" : "bg-bg/75 backdrop-blur-md";
@@ -114,19 +135,35 @@ export default function MemoryRoom({ isModal = false, onClose, isDarkTheme = fal
                   </div>
                 </div>
 
-                {/* Field 2: Email or WhatsApp */}
-                <div className="space-y-1">
-                  <label className={`block font-mono text-[10px] uppercase tracking-wider ${textMutedClass} font-bold select-none`}>
-                    Email Address or WhatsApp Number
-                  </label>
-                  <input 
-                    type="text" 
-                    value={contact}
-                    onChange={(e) => setContact(e.target.value)}
-                    required
-                    placeholder="ssen@letters.org or +880..."
-                    className={`w-full ${isDarkTheme ? 'bg-[#060000] border-2 border-white/10 focus:border-[#39ff14] text-white placeholder:text-white/20' : 'bg-bg border-2 border-ink focus:border-accent text-ink placeholder:text-ink/30'} font-mono text-xs p-2.5 focus:outline-none transition-colors rounded-xs`}
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Field 2: WhatsApp */}
+                  <div className="space-y-1">
+                    <label className={`block font-mono text-[10px] uppercase tracking-wider ${textMutedClass} font-bold select-none`}>
+                      WhatsApp Number
+                    </label>
+                    <input 
+                      type="text" 
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      required
+                      placeholder="+880..."
+                      className={`w-full ${isDarkTheme ? 'bg-[#060000] border-2 border-white/10 focus:border-[#39ff14] text-white placeholder:text-white/20' : 'bg-bg border-2 border-ink focus:border-accent text-ink placeholder:text-ink/30'} font-mono text-xs p-2.5 focus:outline-none transition-colors rounded-xs`}
+                    />
+                  </div>
+
+                  {/* Field 4: Email */}
+                  <div className="space-y-1">
+                    <label className={`block font-mono text-[10px] uppercase tracking-wider ${textMutedClass} font-bold select-none`}>
+                      Email Address
+                    </label>
+                    <input 
+                      type="email" 
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="ssen@letters.org"
+                      className={`w-full ${isDarkTheme ? 'bg-[#060000] border-2 border-white/10 focus:border-[#39ff14] text-white placeholder:text-white/20' : 'bg-bg border-2 border-ink focus:border-accent text-ink placeholder:text-ink/30'} font-mono text-xs p-2.5 focus:outline-none transition-colors rounded-xs`}
+                    />
+                  </div>
                 </div>
 
                 {/* Submit button */}
@@ -136,7 +173,7 @@ export default function MemoryRoom({ isModal = false, onClose, isDarkTheme = fal
                   </span>
                   <button
                     type="submit"
-                    disabled={isLoading || !name || !contact}
+                    disabled={isLoading || !name || !whatsapp}
                     className={`w-full sm:w-auto py-2.5 px-5 ${
                       isDarkTheme 
                         ? 'border-2 border-[#39ff14] bg-transparent text-[#39ff14] hover:bg-[#39ff14] hover:text-[#060000] shadow-[3px_3px_0px_rgba(57,255,20,0.15)] disabled:hover:bg-transparent disabled:hover:text-[#39ff14]' 

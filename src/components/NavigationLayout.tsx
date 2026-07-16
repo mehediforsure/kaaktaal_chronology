@@ -59,11 +59,10 @@ export default function NavigationLayout({ children }: { children: React.ReactNo
   useEffect(() => {
     if (hasDismissedInvitation || showMemoryInvitation) return;
     
-    const totalInteractions = state.songsOpened + state.journalInteractions + state.finderUsage + state.mapClicks;
-    if (state.timeSpent >= 45 && totalInteractions >= 30) {
+    if (state.timeSpent >= 20 && (state.globalClicks || 0) >= 20) {
       setShowMemoryInvitation(true);
     }
-  }, [state.timeSpent, state.songsOpened, state.journalInteractions, state.finderUsage, state.mapClicks, hasDismissedInvitation, showMemoryInvitation, setShowMemoryInvitation]);
+  }, [state.timeSpent, state.globalClicks, hasDismissedInvitation, showMemoryInvitation, setShowMemoryInvitation]);
 
   const triggerRandomAccident = () => {
     const rand = CROW_ACCIDENTS[Math.floor(Math.random() * CROW_ACCIDENTS.length)];

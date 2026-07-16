@@ -87,6 +87,7 @@ export interface EngagementState {
   journalInteractions: number; // play/stop atmosphere clicks
   finderUsage: number; // finder question clicks
   mapClicks: number; // map node clicks
+  globalClicks: number; // overall total clicks
 }
 
 export type EngagementAction = 
@@ -95,7 +96,8 @@ export type EngagementAction =
   | 'song_opened'
   | 'journal_interaction'
   | 'finder_usage'
-  | 'map_click';
+  | 'map_click'
+  | 'global_click';
 
 export interface UnlockableExperience {
   id: string;
