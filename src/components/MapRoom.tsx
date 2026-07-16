@@ -26,13 +26,15 @@ interface MapNode {
 }
 
 const ARCHIVAL_COLORS = {
-  charcoal1: '#1C1C1E',
-  charcoal2: '#242426',
-  dustyGrey: '#2C2C2E',
-  deepNavy: '#1C2127',
-  fadedMoss: '#222723',
-  warmBark: '#2A2421',
-  mutedPlum: '#261F26'
+  c1: '#A6D996',
+  c2: '#E4E5F9',
+  c3: '#863187',
+  c4: '#138C15',
+  c5: '#FC8500',
+  c6: '#DB491E',
+  c7: '#792952',
+  c8: '#FA8501',
+  c9: '#6342E8'
 };
 
 const INITIAL_NODES: MapNode[] = [
@@ -44,7 +46,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'real',
     x: 400,
     y: 400,
-    color: ARCHIVAL_COLORS.charcoal2,
+    color: ARCHIVAL_COLORS.c1,
     songsCount: 14,
     storiesCount: 22,
     journalsCount: 18,
@@ -59,7 +61,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'prison',
     x: 250,
     y: 650,
-    color: ARCHIVAL_COLORS.charcoal1,
+    color: ARCHIVAL_COLORS.c2,
     songsCount: 7,
     storiesCount: 12,
     journalsCount: 5,
@@ -74,7 +76,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'memory',
     x: 650,
     y: 250,
-    color: ARCHIVAL_COLORS.fadedMoss,
+    color: ARCHIVAL_COLORS.c3,
     songsCount: 9,
     storiesCount: 15,
     journalsCount: 8,
@@ -89,7 +91,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'memory',
     x: 150,
     y: 400,
-    color: ARCHIVAL_COLORS.warmBark,
+    color: ARCHIVAL_COLORS.c4,
     songsCount: 5,
     storiesCount: 9,
     journalsCount: 4,
@@ -104,7 +106,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'memory',
     x: 750,
     y: 500,
-    color: ARCHIVAL_COLORS.deepNavy,
+    color: ARCHIVAL_COLORS.c5,
     songsCount: 6,
     storiesCount: 11,
     journalsCount: 7,
@@ -119,7 +121,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'imaginary',
     x: 600,
     y: 750,
-    color: ARCHIVAL_COLORS.mutedPlum,
+    color: ARCHIVAL_COLORS.c6,
     songsCount: 8,
     storiesCount: 6,
     journalsCount: 10,
@@ -134,7 +136,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'imaginary',
     x: 900,
     y: 300,
-    color: ARCHIVAL_COLORS.dustyGrey,
+    color: ARCHIVAL_COLORS.c7,
     songsCount: 11,
     storiesCount: 18,
     journalsCount: 12,
@@ -149,7 +151,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'memory',
     x: 350,
     y: 200,
-    color: ARCHIVAL_COLORS.fadedMoss,
+    color: ARCHIVAL_COLORS.c8,
     songsCount: 4,
     storiesCount: 8,
     journalsCount: 6,
@@ -164,7 +166,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'show',
     x: -50,
     y: 250,
-    color: ARCHIVAL_COLORS.deepNavy,
+    color: ARCHIVAL_COLORS.c9,
     songsCount: 12,
     storiesCount: 14,
     journalsCount: 9,
@@ -179,7 +181,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'show',
     x: 550,
     y: -50,
-    color: ARCHIVAL_COLORS.charcoal1,
+    color: ARCHIVAL_COLORS.c1,
     songsCount: 5,
     storiesCount: 8,
     journalsCount: 3,
@@ -194,7 +196,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'memory',
     x: 50,
     y: 700,
-    color: ARCHIVAL_COLORS.warmBark,
+    color: ARCHIVAL_COLORS.c2,
     songsCount: 10,
     storiesCount: 16,
     journalsCount: 11,
@@ -209,7 +211,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'real',
     x: 950,
     y: -100,
-    color: ARCHIVAL_COLORS.fadedMoss,
+    color: ARCHIVAL_COLORS.c3,
     songsCount: 3,
     storiesCount: 5,
     journalsCount: 2,
@@ -224,7 +226,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'real',
     x: -200,
     y: 0,
-    color: ARCHIVAL_COLORS.warmBark,
+    color: ARCHIVAL_COLORS.c4,
     songsCount: 2,
     storiesCount: 4,
     journalsCount: 1,
@@ -239,7 +241,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'real',
     x: -150,
     y: 900,
-    color: ARCHIVAL_COLORS.deepNavy,
+    color: ARCHIVAL_COLORS.c5,
     songsCount: 4,
     storiesCount: 3,
     journalsCount: 4,
@@ -254,7 +256,7 @@ const INITIAL_NODES: MapNode[] = [
     type: 'real',
     x: 600,
     y: 1000,
-    color: ARCHIVAL_COLORS.charcoal2,
+    color: ARCHIVAL_COLORS.c6,
     songsCount: 6,
     storiesCount: 7,
     journalsCount: 5,
@@ -499,7 +501,21 @@ export default function MapRoom({ onBack }: MapRoomProps) {
   };
 
   return (
-    <div className="relative w-full h-full bg-[#111111] text-[#EAE8DE] overflow-hidden select-none font-sans">
+    <div className="relative w-full h-full text-[#EAE8DE] overflow-hidden select-none font-sans"
+         style={{
+           background: `
+             radial-gradient(circle at 10% 20%, rgba(211,26,26,0.15) 0%, transparent 40%),
+             radial-gradient(circle at 90% 80%, rgba(166,217,150,0.15) 0%, transparent 40%),
+             radial-gradient(circle at 80% 20%, rgba(134,49,135,0.15) 0%, transparent 40%),
+             radial-gradient(circle at 20% 80%, rgba(252,133,0,0.15) 0%, transparent 40%),
+             radial-gradient(circle at 50% 50%, rgba(228,229,249,0.1) 0%, transparent 50%),
+             radial-gradient(circle at 30% 40%, rgba(184,69,42,0.1) 0%, transparent 50%),
+             radial-gradient(circle at 70% 60%, rgba(204,220,193,0.1) 0%, transparent 50%),
+             radial-gradient(circle at 10% 90%, rgba(219,73,30,0.15) 0%, transparent 40%),
+             radial-gradient(circle at 90% 10%, rgba(99,66,232,0.15) 0%, transparent 40%),
+             #111113
+           `
+         }}>
       
       {/* Texture Layer */}
       <div className="absolute inset-0 bg-[#000] mix-blend-color-dodge opacity-10 pointer-events-none z-0" 
@@ -532,24 +548,7 @@ export default function MapRoom({ onBack }: MapRoomProps) {
         )}
       </AnimatePresence>
 
-      {/* Return to Archive Button */}
-      <AnimatePresence>
-        {showUI && onBack && (
-          <motion.div
-            initial={{ opacity: 0, x: 120, y: -10 }} animate={{ opacity: 1, x: 0, y: 0 }} exit={{ opacity: 0, x: 120, y: -10 }}
-            onMouseEnter={() => setIsHoveringControls(true)} onMouseLeave={() => setIsHoveringControls(false)}
-            className="absolute top-4 right-0 z-30 map-control-ui pointer-events-auto"
-          >
-            <button
-              onClick={onBack}
-              className="py-2 sm:py-2.5 px-3 sm:px-5 bg-[#27272A] hover:bg-[#3F3F46] text-[#E4E4E7] hover:text-white border-y border-l border-[#52525B]/60 rounded-l-full rounded-r-none font-mono text-[10px] sm:text-xs uppercase tracking-widest transition-all cursor-pointer shadow-2xl flex items-center gap-1.5 sm:gap-2 font-bold group"
-            >
-              <ArrowLeft className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[#A1A1AA] group-hover:text-white transition-transform group-hover:-translate-x-0.5" />
-              <span className="hidden sm:inline">Return to Archive</span>
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Removed local back button; now handled by Crow component in NavigationLayout */}
 
       {/* 2. Interactive Map Canvas */}
       <div 

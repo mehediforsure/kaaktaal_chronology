@@ -9,9 +9,11 @@ import { fetchReleases, fetchSongsForAlbum } from '../lib/supabase';
 
 interface MusicArchiveRoomProps {
   onSelectAlbum?: (album: Album) => void;
+  initialAlbumId?: string;
+  initialSongId?: string;
 }
 
-export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProps) {
+export default function MusicArchiveRoom({ onSelectAlbum, initialAlbumId, initialSongId }: MusicArchiveRoomProps) {
   const { logAction } = useEngagement();
   const [albumsList, setAlbumsList] = useState<Album[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -27,11 +29,19 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
       const liveData = await fetchReleases();
       if (liveData && liveData.length > 0) {
         setAlbumsList(liveData);
+        
+        // If we have an initial album ID from the URL, select it
+        if (initialAlbumId) {
+          const matchedAlbum = liveData.find(a => a.release_id === initialAlbumId);
+          if (matchedAlbum) {
+            setSelectedAlbum(matchedAlbum);
+          }
+        }
       }
       setIsLoading(false);
     }
     loadLiveReleases();
-  }, []);
+  }, [initialAlbumId]);
 
   // Fetch live database songs from Supabase and merge with album tracklist to ensure complete song list
   useEffect(() => {
@@ -107,6 +117,19 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
     loadAlbumSongs();
   }, [selectedAlbum]);
 
+  // Handle initial song selection once songs are loaded
+  useEffect(() => {
+    if (initialSongId && albumSongs.length > 0) {
+      const matchedSong = albumSongs.find(s => s.song_id === initialSongId);
+      if (matchedSong) {
+        setSelectedSongObject(matchedSong);
+      } else {
+        // Might be a string track match
+        setSelectedSongTrack(initialSongId);
+      }
+    }
+  }, [initialSongId, albumSongs]);
+
   // Dynamic atmospheric overlay style based on hovered album
   const getAtmosphericColor = () => {
     if (!hoveredAlbum) return 'bg-bg';
@@ -125,11 +148,12 @@ export default function MusicArchiveRoom({ onSelectAlbum }: MusicArchiveRoomProp
 
   const handleSelect = (album: Album) => {
     logAction('song_opened');
-    setSelectedAlbum(album);
-    setSelectedSongObject(null);
-    setSelectedSongTrack(null);
     if (onSelectAlbum) {
       onSelectAlbum(album);
+    } else {
+      setSelectedAlbum(album);
+      setSelectedSongObject(null);
+      setSelectedSongTrack(null);
     }
   };
 

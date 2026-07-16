@@ -1,23 +1,25 @@
 "use client";
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { ActiveRoom } from '../types';
 import { getOptimizedImageUrl } from '../utils/image';
 
 interface CardProps {
-  onRoomChange: (room: ActiveRoom) => void;
+  onRoomChange?: (room: ActiveRoom | string) => void;
   isShrunk?: boolean;
+  href?: string;
 }
 
-export function PortalCard({ onRoomChange }: CardProps) {
+export function PortalCard({ onRoomChange, href }: CardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const imageUrl = getOptimizedImageUrl("https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/portal.png", 800);
 
-  return (
+  const innerContent = (
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => onRoomChange('portal')}
+      onClick={() => onRoomChange && onRoomChange('portal')}
       className={`relative w-full p-5 md:p-6 h-28 sm:h-36 md:h-40 lg:h-44 xl:h-48 2xl:h-52 flex flex-col items-center justify-center text-center gap-4 transition-all duration-300 border-2 border-ink rounded-sm shadow-[2px_2px_0px_rgba(17,17,19,0.15)] cursor-pointer overflow-hidden ${
         isHovered
           ? 'bg-ink text-accent -translate-y-0.5 shadow-[4px_4px_0px_rgba(17,17,19,0.3)]'
@@ -50,17 +52,22 @@ export function PortalCard({ onRoomChange }: CardProps) {
       </div>
     </div>
   );
+
+  if (href) {
+    return <Link href={href} className="w-full">{innerContent}</Link>;
+  }
+  return innerContent;
 }
 
-export function FinderCard({ onRoomChange, isShrunk = false }: CardProps) {
+export function FinderCard({ onRoomChange, isShrunk = false, href }: CardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const textureUrl = getOptimizedImageUrl("https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/texture.jpg", 800);
 
-  return (
+  const innerContent = (
     <div
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      onClick={() => onRoomChange('finder')}
+      onClick={() => onRoomChange && onRoomChange('finder')}
       className={`relative flex flex-col items-center justify-center text-center transition-all duration-300 border border-ink rounded-sm shadow-[2px_2px_0px_rgba(17,17,19,0.15)] cursor-pointer ${
         isShrunk
           ? 'w-[24px] h-18 sm:w-auto sm:h-[30px] px-2 sm:px-3 max-sm:translate-y-6 max-sm:-translate-x-1.5'
@@ -92,4 +99,9 @@ export function FinderCard({ onRoomChange, isShrunk = false }: CardProps) {
       </div>
     </div>
   );
+
+  if (href) {
+    return <Link href={href} className={isShrunk ? '' : 'w-full'}>{innerContent}</Link>;
+  }
+  return innerContent;
 }

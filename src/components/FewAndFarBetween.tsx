@@ -165,16 +165,6 @@ export default function FewAndFarBetween() {
             {/* Page Header */}
             <div className="border-b-2 border-ink pb-6 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 select-none">
               <div>
-                <div className="flex items-center gap-2">
-                  <span className="font-mono text-[9px] uppercase tracking-widest text-accent font-bold px-2 py-0.5 border border-accent/20 rounded-xs">
-                    SUPABASE LIVE ARCHIVE
-                  </span>
-                  {supabaseSongs.length > 0 && (
-                    <span className="font-mono text-[9px] uppercase tracking-widest text-ink/60 font-bold">
-                      [{supabaseSongs.length} UNRELEASED TRACKS]
-                    </span>
-                  )}
-                </div>
                 <h3 className="font-syne text-3xl md:text-4xl font-extrabold uppercase tracking-tighter text-ink mt-2">
                   Few &amp; Far Between
                 </h3>
