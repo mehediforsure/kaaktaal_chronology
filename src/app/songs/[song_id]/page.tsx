@@ -22,12 +22,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${song.title_en} - Kaaktaal Song`,
     description: song.description_short || `Listen to ${song.title_en} by Kaaktaal from the album ${song.album}.`,
     alternates: {
-      canonical: `https://kaaktaal.com/songs/${song_id}`,
+      canonical: `https://kaaktaal-v2.vercel.app/songs/${song_id}`,
     },
     openGraph: {
       title: `${song.title_en} - Kaaktaal`,
       description: song.description_short || `Kaaktaal track from ${song.album}.`,
+      url: `https://kaaktaal-v2.vercel.app/songs/${song_id}`,
+      type: 'music.song',
       images: song.cover_image ? [{ url: song.cover_image }] : [],
+      // @ts-ignore
+      music: {
+        musician: 'https://kaaktaal-v2.vercel.app/',
+        album: song.album ? `https://kaaktaal-v2.vercel.app/albums/${song.release_id || ''}` : undefined,
+      }
     }
   };
 }
@@ -57,16 +64,18 @@ export default async function SongDetailPage({ params }: Props) {
               "name": song.title_en,
               "byArtist": {
                 "@type": "MusicGroup",
-                "name": "Kaaktaal"
+                "name": "Kaaktaal",
+                "url": "https://kaaktaal-v2.vercel.app/"
               },
               "inAlbum": song.album ? {
                 "@type": "MusicAlbum",
-                "name": song.album
+                "name": song.album,
+                "url": albumId ? `https://kaaktaal-v2.vercel.app/albums/${albumId}` : undefined
               } : undefined,
               "datePublished": song.year_released,
               "description": song.description_short,
-              "url": `https://kaaktaal.com/songs/${song_id}`,
-              "image": song.cover_image
+              "url": `https://kaaktaal-v2.vercel.app/songs/${song_id}`,
+              "image": song.cover_image || "https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/logo%20grey%20black.png"
             })
           }}
         />

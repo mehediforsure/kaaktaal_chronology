@@ -22,12 +22,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: `${album.title} - Kaaktaal Album`,
     description: album.description_short || `Listen to ${album.title} by Kaaktaal.`,
     alternates: {
-      canonical: `https://kaaktaal.com/albums/${release_id}`,
+      canonical: `https://kaaktaal-v2.vercel.app/albums/${release_id}`,
     },
     openGraph: {
       title: `${album.title} - Kaaktaal Album`,
       description: album.description_short,
+      url: `https://kaaktaal-v2.vercel.app/albums/${release_id}`,
+      type: 'music.album',
       images: album.cover_image ? [{ url: album.cover_image }] : [],
+      // @ts-ignore - Next.js types might not fully support all music.* properties yet
+      music: {
+        musician: 'https://kaaktaal-v2.vercel.app/',
+        release_date: album.release_date,
+      }
     }
   };
 }
@@ -48,13 +55,20 @@ export default async function AlbumDetailPage({ params }: Props) {
               "name": album.title,
               "byArtist": {
                 "@type": "MusicGroup",
-                "name": "Kaaktaal"
+                "name": "Kaaktaal",
+                "url": "https://kaaktaal-v2.vercel.app/"
               },
               "datePublished": album.release_date || album.year,
               "description": album.description_short,
-              "url": `https://kaaktaal.com/albums/${release_id}`,
-              "image": album.cover_image,
-              "numTracks": album.tracks ? album.tracks.length : 0
+              "url": `https://kaaktaal-v2.vercel.app/albums/${release_id}`,
+              "image": album.cover_image || "https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/logo%20grey%20black.png",
+              "numTracks": album.tracks ? album.tracks.length : 0,
+              "track": album.tracks ? album.tracks.map((t, i) => ({
+                "@type": "MusicRecording",
+                "name": t,
+                "position": i + 1,
+                "byArtist": { "@type": "MusicGroup", "name": "Kaaktaal" }
+              })) : undefined
             })
           }}
         />

@@ -3,7 +3,7 @@ import { fetchReleases, fetchSongs } from '../lib/supabase';
 import { ALBUMS, CROW_ACCIDENTS } from '../data';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://kaaktaal.com';
+  const baseUrl = 'https://kaaktaal-v2.vercel.app';
 
   const sitemapEntries: MetadataRoute.Sitemap = [
     {

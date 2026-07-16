@@ -6,7 +6,12 @@ export const metadata: Metadata = {
   title: 'Kaaktaal Chronology | The Finder',
   description: 'Search and discover elements in the Kaaktaal archive.',
   alternates: {
-    canonical: 'https://kaaktaal.com/finder',
+    canonical: 'https://kaaktaal-v2.vercel.app/finder',
+  },
+  openGraph: {
+    title: 'Kaaktaal Chronology | The Finder',
+    description: 'Search and discover elements in the Kaaktaal archive.',
+    url: 'https://kaaktaal-v2.vercel.app/finder',
   }
 };
 
@@ -20,13 +25,13 @@ export default function FinderPage() {
             "@context": "https://schema.org",
             "@type": "WebPage",
             "name": "The Finder - Kaaktaal",
-            "url": "https://kaaktaal.com/finder"
+            "url": "https://kaaktaal-v2.vercel.app/finder"
           })
         }}
       />
-      <div className="w-full h-full flex flex-col justify-start flex-1">
+      <main className="w-full h-full flex flex-col justify-start flex-1">
         <FinderClient />
-      </div>
+      </main>
     </>
   );
 }

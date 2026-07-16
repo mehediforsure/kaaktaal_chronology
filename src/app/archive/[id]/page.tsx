@@ -16,15 +16,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return { title: 'Kaaktaal Archive | Not Found' };
   }
 
+  const isArticle = accident.type === 'journal' || accident.type === 'story';
+
   return {
     title: `${accident.title} - Kaaktaal Archive`,
     description: accident.content.slice(0, 150) + '...',
     alternates: {
-      canonical: `https://kaaktaal.com/archive/${id}`,
+      canonical: `https://kaaktaal-v2.vercel.app/archive/${id}`,
     },
     openGraph: {
       title: `${accident.title} - Kaaktaal Archive`,
       description: accident.content.slice(0, 150) + '...',
+      url: `https://kaaktaal-v2.vercel.app/archive/${id}`,
+      type: isArticle ? 'article' : 'website',
       images: accident.image ? [{ url: accident.image }] : [],
     }
   };
@@ -34,6 +38,10 @@ export default async function ArchiveDetailPage({ params }: Props) {
   const { id } = params;
   const accident = CROW_ACCIDENTS.find(a => a.id === id);
 
+  const schemaType = accident?.type === 'journal' ? 'BlogPosting' 
+    : accident?.type === 'story' ? 'Article' 
+    : 'CreativeWork';
+
   return (
     <>
       {accident && (
@@ -42,15 +50,25 @@ export default async function ArchiveDetailPage({ params }: Props) {
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "CreativeWork",
+              "@type": schemaType,
+              "headline": accident.title,
               "name": accident.title,
               "text": accident.content,
               "author": {
                 "@type": "Organization",
-                "name": "Kaaktaal"
+                "name": "Kaaktaal",
+                "url": "https://kaaktaal-v2.vercel.app/"
               },
-              "url": `https://kaaktaal.com/archive/${id}`,
-              "image": accident.image
+              "publisher": {
+                "@type": "Organization",
+                "name": "Kaaktaal",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/logo%20grey%20black.png"
+                }
+              },
+              "url": `https://kaaktaal-v2.vercel.app/archive/${id}`,
+              "image": accident.image || "https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/logo%20grey%20black.png"
             })
           }}
         />

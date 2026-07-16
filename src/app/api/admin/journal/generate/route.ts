@@ -19,7 +19,7 @@ async function handleGenerate(req: Request) {
       }
 
       if (!baseUrl) {
-        const host = req.headers.get("host") || "kaaktaal.com";
+        const host = req.headers.get("host") || "kaaktaal-v2.vercel.app";
         const protocol = host.includes("localhost") ? "http" : "https";
         baseUrl = `${protocol}://${host}`;
       }

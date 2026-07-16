@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/api/',
     },
-    sitemap: 'https://kaaktaal.com/sitemap.xml',
+    sitemap: 'https://kaaktaal-v2.vercel.app/sitemap.xml',
   };
 }

@@ -6,7 +6,12 @@ export const metadata: Metadata = {
   title: 'Kaaktaal Chronology | Cartography Room',
   description: 'A map of memories and coincidences.',
   alternates: {
-    canonical: 'https://kaaktaal.com/map',
+    canonical: 'https://kaaktaal-v2.vercel.app/map',
+  },
+  openGraph: {
+    title: 'Kaaktaal Chronology | Cartography Room',
+    description: 'A map of memories and coincidences.',
+    url: 'https://kaaktaal-v2.vercel.app/map',
   }
 };
 
@@ -20,13 +25,13 @@ export default function MapPage() {
             "@context": "https://schema.org",
             "@type": "WebPage",
             "name": "Cartography Room - Kaaktaal",
-            "url": "https://kaaktaal.com/map"
+            "url": "https://kaaktaal-v2.vercel.app/map"
           })
         }}
       />
-      <div className="w-full h-full flex-1">
+      <main className="w-full h-full flex-1">
         <MapClient />
-      </div>
+      </main>
     </>
   );
 }
