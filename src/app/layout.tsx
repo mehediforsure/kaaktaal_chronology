@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     description: 'An archival collection of Kaaktaal\'s music and memories.',
     images: ['https://raw.githubusercontent.com/mehediforsure/kaaktaal_assets/main/logo%20grey%20black.png'],
   },
+  verification: {
+    google: 'EYmRte-5fXLWA7NvHMrf7h4m5zSG6oI3JIjhngLosQ0',
+  },
 };
 
 export default function RootLayout({
